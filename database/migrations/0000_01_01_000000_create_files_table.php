@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_seeker_languages', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->onDelete('cascade');
-            $table->string('name')->nullable();
-            $table->foreignId('language_proficiency_id')->constrained('language_proficiencies')->onDelete('cascade');
+            $table->morphs('fileable');
+            $table->string('file_path');
+            $table->string('file_name');
+            $table->string('mime_type');
+            $table->unsignedInteger('file_size');
             $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_seeker_languages');
+        Schema::dropIfExists('files');
     }
 };

@@ -126,7 +126,7 @@ export default function CvUpload() {
                         }}
                         onSuccess={()=>{
                             // setFilePreview(null);
-                            // toast.success("Профиль успешно обновлён")
+                            toast.success("Файл успешно обработон")
                         }}
                         className="space-y-6"
                     >
@@ -210,15 +210,14 @@ export default function CvUpload() {
                                             </div>
                                         )}
 
-                                        <p className="text-sm text-muted-foreground">
-                                            PDF, DOCX, JPG, PNG до 5MB
+                                        <p className="text-sm text-muted-foreground truncate" title={"PDF,DOCX,DOC,TXT,IMAGE до 5МБ"}>
+                                            PDF, DOCX, DOC, TXT, IMAGE  до 5MB
                                         </p>
                                     </div>
                                 </div>
                                 {errors.file}
                                 <div className="flex items-center gap-4">
-                                    <Button disabled={processing}
-                                           >Сохранить</Button>
+                                    <Button disabled={processing}>Сохранить</Button>
                                     {/*<Transition*/}
                                     {/*    show={recentlySuccessful}*/}
                                     {/*    enter="transition ease-in-out"*/}

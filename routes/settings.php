@@ -25,7 +25,9 @@ Route::middleware('auth')->group(function () {
         ->name('password.update');
     Route::middleware('role:jobseeker')->group(function () {
         Route::get('/settings/jobseeker',[JobSeekerController::class,'index'])->name('jobseeker.index');
-        Route::post('/settings/jobseeker',[JobSeekerController::class,'store'])->name('jobseeker.store');
+        Route::post('/settings/jobseeker/upload',[JobSeekerController::class,'store'])->name('jobseeker.store');
+        Route::get('/settings/jobseeker/edit', [JobSeekerController::class, 'edit'])->name('jobseeker.edit');
+        Route::patch('settings/jobseeker/patch', [JobSeekerController::class, 'patch'])->name('jobseeker.patch');
     });
 });
 

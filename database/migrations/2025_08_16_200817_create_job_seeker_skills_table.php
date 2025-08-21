@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('job_seeker_skills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->onDelete('cascade');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->foreignId('skill_category_id')->constrained('skill_categories')->onDelete('cascade');
             $table->integer('sort_order')->default(0);
             $table->timestamps();

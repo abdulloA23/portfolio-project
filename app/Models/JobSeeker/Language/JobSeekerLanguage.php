@@ -20,7 +20,7 @@ class JobSeekerLanguage extends Model
         return $this->belongsTo(LanguageProficiency::class);
     }
 
-    public function jobSeekerProfile():BelongsTo
+    public function profile():BelongsTo
     {
         return $this->belongsTo(JobSeekerProfile::class);
     }

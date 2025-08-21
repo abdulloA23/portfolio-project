@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\JobSeeker\Skill\SkillCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class SkillCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        SkillCategory::create(['name' => 'Web Development','slug'=>"web-development"]);
     }
 }

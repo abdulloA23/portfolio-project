@@ -20,8 +20,13 @@ class JobSeekerEducation extends Model
         'sort_order'
     ];
 
-    public function jobSeekerProfile():BelongsTo
+    public function profile():BelongsTo
     {
         return $this->belongsTo(JobSeekerProfile::class);
     }
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 }

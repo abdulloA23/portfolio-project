@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jon_seeker_files', function (Blueprint $table) {
+        Schema::create('job_seeker_additions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->onDelete('cascade');
-            $table->string('file_path');
-            $table->string('file_name');
-            $table->enum('file_type',[
-                'resume','certificate','portfolio','diploma','image'
-            ]);
-            $table->enum('mime_type',[
-                'pdf','docx','images/png','images/jpg','images/jpeg',
-            ]);
+            $table->foreignId('addition_category_id')->constrained('addition_categories')->onDelete('cascade');
             $table->string('title')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jon_seeker_files');
+        Schema::dropIfExists('job_seeker_additions');
     }
 };

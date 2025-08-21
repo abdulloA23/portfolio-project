@@ -20,7 +20,7 @@ class JobSeekerExperience extends Model
         'sort_order'
     ];
 
-    public function jobSeekerProfile():BelongsTo
+    public function profile():BelongsTo
     {
         return $this->belongsTo(JobSeekerProfile::class);
     }

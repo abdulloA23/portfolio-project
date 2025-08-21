@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('job_seeker_experiences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->onDelete('cascade');
-            $table->string('job_title');
-            $table->string('company_name');
-            $table->string('company_address');
-            $table->date('start_date');
+            $table->string('job_title')->nullable();
+            $table->string('company_name')->nullable();
+            $table->string('company_address')->nullable();
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_current')->default(false);
             $table->text('description')->nullable();

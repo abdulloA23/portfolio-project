@@ -172,12 +172,131 @@ class JobSeekerController extends Controller
     public function edit(EditJobSeekerRequest $request):Response
     {
         $validated = $request->validated();
+        
+        $profile = JobSeekerProfile::with([
+            'education' => fn($q) => $q->orderBy('sort_order'),
+            'experiences' => fn($q) => $q->orderBy('sort_order'),
+            'skills' => fn($q) => $q->orderBy('sort_order'),
+            'languages' => fn($q) => $q->orderBy('sort_order'),
+            'additions' => fn($q) => $q->orderBy('sort_order'),
+            'links'
+        ])->where('user_id', auth()->id())->firstOrFail();
 
-        return Inertia::render('settings/jobseeker/edit');
+        return Inertia::render('settings/jobseeker/edit', [
+            'profile' => $profile
+        ]);
     }
     public function patch(PatchJobSeekerRequest $request, JobSeekerProfile $profile):RedirectResponse
     {
         $validated = $request->validated();
+        
+        DB::transaction(function () use ($validated, $profile) {
+            // Update main profile data
+            $profile->update([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'middle_name' => $validated['middle_name'] ?? null,
+                'birth_date' => $validated['birth_date'] ?? null,
+                'gender' => $validated['gender'],
+                'about' => $validated['about'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'email' => $validated['email'],
+                'country' => $validated['country'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'summary' => $validated['summary'] ?? null,
+                'location' => $validated['location'] ?? null,
+            ]);
+
+            // Update education
+            if (isset($validated['education'])) {
+                $profile->education()->delete();
+                foreach ($validated['education'] as $edu) {
+                    $profile->education()->create([
+                        'id' => $edu['id'],
+                        'institution' => $edu['institution'],
+                        'degree' => $edu['degree'],
+                        'field_of_study' => $edu['field_of_study'],
+                        'start_date' => $edu['start_date'],
+                        'end_date' => $edu['end_date'] ?? null,
+                        'description' => $edu['description'] ?? null,
+                        'is_current' => $edu['is_current'],
+                        'sort_order' => $edu['sort_order']
+                    ]);
+                }
+            }
+
+            // Update experiences
+            if (isset($validated['experiences'])) {
+                $profile->experiences()->delete();
+                foreach ($validated['experiences'] as $exp) {
+                    $profile->experiences()->create([
+                        'id' => $exp['id'],
+                        'job_title' => $exp['job_title'],
+                        'company_name' => $exp['company_name'],
+                        'company_address' => $exp['company_address'],
+                        'start_date' => $exp['start_date'],
+                        'end_date' => $exp['end_date'] ?? null,
+                        'description' => $exp['description'] ?? null,
+                        'is_current' => $exp['is_current'],
+                        'sort_order' => $exp['sort_order']
+                    ]);
+                }
+            }
+
+            // Update skills
+            if (isset($validated['skills'])) {
+                $profile->skills()->delete();
+                foreach ($validated['skills'] as $skill) {
+                    $profile->skills()->create([
+                        'id' => $skill['id'],
+                        'name' => $skill['name'],
+                        'skill_category_id' => $skill['skill_category_id'],
+                        'sort_order' => $skill['sort_order']
+                    ]);
+                }
+            }
+
+            // Update languages
+            if (isset($validated['languages'])) {
+                $profile->languages()->delete();
+                foreach ($validated['languages'] as $lang) {
+                    $profile->languages()->create([
+                        'id' => $lang['id'],
+                        'name' => $lang['name'],
+                        'language_proficiency_id' => $lang['language_proficiency_id'],
+                        'sort_order' => $lang['sort_order']
+                    ]);
+                }
+            }
+
+            // Update additions
+            if (isset($validated['additions'])) {
+                $profile->additions()->delete();
+                foreach ($validated['additions'] as $add) {
+                    $profile->additions()->create([
+                        'id' => $add['id'],
+                        'title' => $add['title'],
+                        'description' => $add['description'] ?? null,
+                        'addition_category_id' => $add['addition_category_id'],
+                        'sort_order' => $add['sort_order']
+                    ]);
+                }
+            }
+
+            // Update links
+            if (isset($validated['links'])) {
+                $profile->links()->delete();
+                foreach ($validated['links'] as $link) {
+                    $profile->links()->create([
+                        'id' => $link['id'],
+                        'url' => $link['url'],
+                        'type' => $link['type'],
+                        'sort_order' => $link['sort_order']
+                    ]);
+                }
+            }
+        });
 
         return to_route('jobseeker.edit')->with('success', 'Данные успешно обновились');
     }

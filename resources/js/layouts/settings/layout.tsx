@@ -36,7 +36,7 @@ const baseSidebarNavItems: NavItem[] = [
     },
 ];
 
-export default function SettingsLayout({ children }: PropsWithChildren) {
+export default function SettingsLayout({ children,size='2xl' }: {children:ReactNode,size?:string}) {
     const { role } = usePage<SharedData>().props.auth
     if (typeof window === 'undefined') {
         return null;
@@ -52,7 +52,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
         // Вставляем новый пункт сразу после "Профиль"
         if (profileIndex !== -1) {
             sidebarNavItems.splice(profileIndex + 1, 0, {
-                title: 'Загрузка резюме (CV)',
+                title: 'Резюме (CV)',
                 href: '/settings/jobseeker',
                 icon: UploadIcon,
             });
@@ -63,10 +63,10 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
     return (
         <div className="px-4 py-6">
-            <Heading title="Настройки" description="Управляйте своим профилем и данными об аккаунте" />
+            <Heading  title="Настройки" description="Управляйте своим профилем и данными об аккаунте" />
 
             <div className="flex flex-col lg:flex-row lg:space-x-12">
-                <aside className="w-full max-w-xl lg:w-48">
+                <aside className={`w-full max-w-xl lg:w-48`}>
                     <nav className="flex flex-col space-x-0 space-y-1">
                         {sidebarNavItems.map((item, index) => (
                             <Button
@@ -79,6 +79,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     item.className,
                                     {
                                         'bg-muted': currentPath === item.href,
+                                    },{
+                                        'bg-muted': (item.href === '/settings/jobseeker' && currentPath === '/settings/jobseeker/edit'),
                                     }
                                 )}
                             >
@@ -93,8 +95,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
                 <Separator className="my-6 lg:hidden" />
 
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-12">{children}</section>
+                <div className={`flex-1 md:max-w-${size}`}>
+                    <section className={`max-w-${size} space-y-12`}>{children}</section>
                 </div>
             </div>
         </div>

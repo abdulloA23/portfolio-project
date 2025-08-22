@@ -24,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
+export default function ProfilePage({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const getInitials = useInitials();
@@ -144,7 +144,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                     </div>
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Имя</Label>
+                                    <Label htmlFor="name">Username</Label>
 
                                     <Input
                                         id="name"
@@ -153,7 +153,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                         name="name"
                                         required
                                         autoComplete="name"
-                                        placeholder="Полное имя"
+                                        placeholder="Username"
                                     />
 
                                     <InputError className="mt-2" message={errors.name} />

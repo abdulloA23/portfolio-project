@@ -2,6 +2,7 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
+import { Briefcase } from 'lucide-react';
 
 interface AuthLayoutProps {
     title?: string;
@@ -16,7 +17,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
                 <div className="absolute inset-0 bg-zinc-900" />
                 <Link href={route('home')} className="relative z-20 flex items-center text-lg font-medium">
-                    <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
+                    <Briefcase className={"w-12 h-12 mr-2"}/>
                     {name}
                 </Link>
                 {quote && (

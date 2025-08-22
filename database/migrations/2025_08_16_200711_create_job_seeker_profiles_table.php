@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('middle_name')->nullable();
             $table->date('birth_date')->nullable();
-            $table->string('phone')->nullable();
             $table->string('location')->nullable();
             $table->string('address')->nullable();
             $table->enum('gender', ['male', 'female','unspecified'])->default('unspecified');

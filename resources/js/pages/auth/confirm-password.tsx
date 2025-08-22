@@ -9,17 +9,17 @@ import { LoaderCircle } from 'lucide-react';
 export default function ConfirmPassword() {
     return (
         <AuthLayout
-            title="Confirm your password"
-            description="This is a secure area of the application. Please confirm your password before continuing."
+            title="Подтвердите свой пароль"
+            description="Это безопасная область приложения. Пожалуйста, подтвердите свой пароль, прежде чем продолжить."
         >
-            <Head title="Confirm password" />
+            <Head title="Подтвердите свой пароль" />
 
             <Form method="post" action={route('password.confirm')} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
                     <div className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input id="password" type="password" name="password" placeholder="Password" autoComplete="current-password" autoFocus />
+                            <Label htmlFor="password">Пароль</Label>
+                            <Input id="password" type="password" name="password" placeholder="Пароль" autoComplete="current-password" autoFocus />
 
                             <InputError message={errors.password} />
                         </div>
@@ -27,7 +27,7 @@ export default function ConfirmPassword() {
                         <div className="flex items-center">
                             <Button className="w-full" disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Confirm password
+                                Подтвердить пароль
                             </Button>
                         </div>
                     </div>

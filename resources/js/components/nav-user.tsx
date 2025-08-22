@@ -11,6 +11,7 @@ import {
 import { getRoleIcon, getRoleLabel } from '@/lib/roles.data';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export function NavUser() {
     const { auth } = usePage<SharedData>().props;
@@ -27,7 +28,7 @@ export function NavUser() {
                             <UserInfo user={auth.user} />
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                   <Icon className="cursor-pointer" />
+                                   <Icon />
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>{label}</p>

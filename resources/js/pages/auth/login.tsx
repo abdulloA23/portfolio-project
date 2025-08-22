@@ -20,7 +20,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     const [phone, setPhone] = useState("");
     return (
         <AuthLayout title="Войдите в свою учетную запись" description="Введите свои данные ниже, чтобы войти в систему.">
-            <Head title="Войты" />
+            <Head title="Войти" />
 
             <Form method="post" action={route('login')} resetOnSuccess={['password']} className="flex flex-col gap-6">
                 {({ processing, errors }) => (
@@ -97,7 +97,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                             <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Войты
+                                Войти
                             </Button>
                         </div>
 

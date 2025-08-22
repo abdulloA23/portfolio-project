@@ -6,12 +6,10 @@ export interface JobSeekerProfile {
     first_name: string;
     last_name: string;
     middle_name?: string;
-    birth_date: string;
+    birth_date?: string;
     gender: Gender;
-    phone: string;
     location: string;
     address: string;
-    about?: string;
     education: Education[];
     experiences: Experience[];
     skills: Skill[];

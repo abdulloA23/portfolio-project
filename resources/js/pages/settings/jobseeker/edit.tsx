@@ -52,7 +52,7 @@ export default function EditPage({ profile,message,type }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={breadcrumbs[0].title} />
 
-            <SettingsLayout size={'3xl'}>
+            <SettingsLayout size={'2xl'}>
                 <Form onSubmit={submit} className="space-y-6">
                     <>
                         <div className="flex items-center justify-between">
@@ -160,12 +160,21 @@ export default function EditPage({ profile,message,type }: Props) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <Label>Специальность/Степень</Label>
-                                            <Input
-                                                disabled={!isEditing}
-                                                placeholder="Специальность или степень"
-                                            />
+                                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                            <div>
+                                                <Label>Локация</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    placeholder="Локация"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Адрес</Label>
+                                                <Input
+                                                    disabled={!isEditing}
+                                                    placeholder="Адрес"
+                                                />
+                                            </div>
                                         </div>
                                         <div>
                                             <Label>Описание</Label>

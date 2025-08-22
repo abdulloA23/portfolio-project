@@ -8,12 +8,12 @@ import AuthLayout from '@/layouts/auth-layout';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
-        <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link we just emailed to you.">
-            <Head title="Email verification" />
+        <AuthLayout title="Подтверждение электронной почты" description="Пожалуйста, подтвердите свой адрес электронной почты, перейдя по ссылке, которую мы только что отправили вам по электронной почте.">
+            <Head title="Подтверждение электронной почты" />
 
             {status === 'verification-link-sent' && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address you provided during registration.
+                    На адрес электронной почты, указанный вами при регистрации, была отправлена новая ссылка для подтверждения.
                 </div>
             )}
 
@@ -22,11 +22,11 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     <>
                         <Button disabled={processing} variant="secondary">
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Resend verification email
+                            Повторно отправить подтверждающее письмо
                         </Button>
 
                         <TextLink href={route('logout')} method="post" className="mx-auto block text-sm">
-                            Log out
+                            Выйти
                         </TextLink>
                     </>
                 )}

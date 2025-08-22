@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ class NewPasswordController extends Controller
     {
         return Inertia::render('auth/reset-password', [
             'email' => $request->email,
+            'phone' => $request->phone,
             'token' => $request->route('token'),
         ]);
     }
@@ -37,9 +39,15 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'email' => 'required_without:phone|email|nullable',
+            'phone' => 'required_without:email|string|nullable',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        if ($request->filled('phone')) {
+            $this->resetPasswordWithPhone($request);
+            return to_route('login')->with('status', __('Пароль успешно сброшен'));
+        }
 
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
@@ -66,5 +74,40 @@ class NewPasswordController extends Controller
         throw ValidationException::withMessages([
             'email' => [__($status)],
         ]);
+    }
+
+    /**
+     * Reset the password using phone number.
+     */
+    protected function resetPasswordWithPhone(Request $request): void
+    {
+        $record = DB::table('phone_password_reset_tokens')
+            ->where('phone', $request->phone)
+            ->first();
+
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            throw ValidationException::withMessages([
+                'phone' => [__('Неверный токен сброса пароля.')],
+            ]);
+        }
+
+        $user = User::where('phone', $request->phone)->first();
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'phone' => [__('Пользователь не найден.')],
+            ]);
+        }
+
+        $user->forceFill([
+            'password' => Hash::make($request->password),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        DB::table('phone_password_reset_tokens')
+            ->where('phone', $request->phone)
+            ->delete();
+
+        event(new PasswordReset($user));
     }
 }

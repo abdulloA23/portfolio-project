@@ -61,7 +61,6 @@ class JobSeekerController extends Controller
                 'birth_date' => !empty($data['profile']['birth_date'])
                     ? Carbon::parse($data['profile']['birth_date'])->format('Y-m-d')
                     : null,
-                'phone' => $data['profile']['phone'] ?? '',
                 'location' => $data['profile']['location'] ?? '',
                 'address' => $data['profile']['address'] ?? '',
                 'gender' => !empty($data['profile']['gender'])
@@ -172,7 +171,7 @@ class JobSeekerController extends Controller
     public function edit(EditJobSeekerRequest $request):Response
     {
         $validated = $request->validated();
-        
+
         $profile = JobSeekerProfile::with([
             'education' => fn($q) => $q->orderBy('sort_order'),
             'experiences' => fn($q) => $q->orderBy('sort_order'),
@@ -189,7 +188,7 @@ class JobSeekerController extends Controller
     public function patch(PatchJobSeekerRequest $request, JobSeekerProfile $profile):RedirectResponse
     {
         $validated = $request->validated();
-        
+
         DB::transaction(function () use ($validated, $profile) {
             // Update main profile data
             $profile->update([
@@ -198,11 +197,6 @@ class JobSeekerController extends Controller
                 'middle_name' => $validated['middle_name'] ?? null,
                 'birth_date' => $validated['birth_date'] ?? null,
                 'gender' => $validated['gender'],
-                'about' => $validated['about'] ?? null,
-                'phone' => $validated['phone'] ?? null,
-                'email' => $validated['email'],
-                'country' => $validated['country'] ?? null,
-                'city' => $validated['city'] ?? null,
                 'address' => $validated['address'] ?? null,
                 'summary' => $validated['summary'] ?? null,
                 'location' => $validated['location'] ?? null,

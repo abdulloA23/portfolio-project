@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('linkable');
             $table->string('url');
-            $table->enum('type',['github','linkedin','facebook','x','instagram','other']);
+            $table->enum('type',['github','linkedin','facebook','x','instagram','email','phone','other']);
             $table->timestamps();
         });
     }

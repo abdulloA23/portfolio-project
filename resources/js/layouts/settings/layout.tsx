@@ -36,7 +36,7 @@ const baseSidebarNavItems: NavItem[] = [
     },
 ];
 
-export default function SettingsLayout({ children,size='2xl' }: {children:ReactNode,size?:string}) {
+export default function SettingsLayout({ children,size='xl' }: {children:ReactNode,size?:string}) {
     const { role } = usePage<SharedData>().props.auth
     if (typeof window === 'undefined') {
         return null;

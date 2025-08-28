@@ -53,9 +53,12 @@ export interface Language extends BaseItem {
     language_proficiency_id: number;
 }
 
+export type AdditionCategory = 'achievement' | 'project' | 'education' | 'portfolio';
+
 export interface Addition extends BaseItem {
-    name: string;
-    description?: string;
+    category: AdditionCategory;
+    title: string;
+    description: string;
 }
 
 export interface Link extends BaseItem {

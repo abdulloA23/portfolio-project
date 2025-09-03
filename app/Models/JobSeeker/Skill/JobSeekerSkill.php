@@ -11,7 +11,6 @@ class JobSeekerSkill extends Model
     protected $fillable = [
         'job_seeker_profile_id',
         'name',
-        'skill_category_id',
         'sort_order'
     ];
 
@@ -20,8 +19,4 @@ class JobSeekerSkill extends Model
         return $this->belongsTo(JobSeekerProfile::class);
     }
 
-    public function skillCategory():BelongsTo
-    {
-        return $this->belongsTo(SkillCategory::class);
-    }
 }

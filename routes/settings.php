@@ -29,5 +29,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings/jobseeker/edit', [JobSeekerController::class, 'edit'])->name('jobseeker.edit');
         Route::patch('settings/jobseeker/patch', [JobSeekerController::class, 'patch'])->name('jobseeker.patch');
     });
+
+    Route::middleware('role:employer')->group(function () {
+        Route::get('/settings/employer',[\App\Http\Controllers\EmployerController::class,'edit'])->name('employer.edit');
+        Route::patch('/settings/employer',[\App\Http\Controllers\EmployerController::class,'patch'])->name('employer.patch');
+    });
 });
 

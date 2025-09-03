@@ -6,10 +6,11 @@ export interface JobSeekerProfile {
     first_name: string;
     last_name: string;
     middle_name?: string;
-    birth_date?: string;
-    gender: Gender;
-    location: string;
-    address: string;
+    birth_date?: string|undefined;
+    gender?: Gender;
+    location?: string;
+    address?: string;
+    summary?:string;
     education: Education[];
     experiences: Experience[];
     skills: Skill[];
@@ -24,13 +25,12 @@ export interface BaseItem {
 }
 
 export interface Education extends BaseItem {
-    institution: string;
-    degree: string;
-    field_of_study: string;
-    start_date: string;
-    end_date?: string;
+    institution?: string;
+    degree?: string;
+    field_of_study?: string;
+    start_year?: string;
+    end_year?: string;
     description?: string;
-    is_current: boolean;
 }
 
 export interface Experience extends BaseItem {
@@ -47,21 +47,21 @@ export interface Skill extends BaseItem {
     name: string;
     sort_order: number;
 }
-
 export interface Language extends BaseItem {
     name: string;
     language_proficiency_id: number;
 }
 
-export type AdditionCategory = 'achievement' | 'project' | 'education' | 'portfolio';
+export type AdditionCategory = 'achievement' | 'project' | 'diploma' | 'portfolio' | 'certificate' | 'resume';
 
 export interface Addition extends BaseItem {
-    category: AdditionCategory;
+    addition_category_id: number;
     title: string;
     description: string;
 }
 
-export interface Link extends BaseItem {
+export interface Link {
+    id:number;
     url: string;
     type: string;
 }

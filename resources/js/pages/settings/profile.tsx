@@ -195,7 +195,7 @@ export default function ProfilePage({ mustVerifyEmail, status }: { mustVerifyEma
                                     </div>
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Полное имя</Label>
+                                    <Label htmlFor="name">Username</Label>
 
                                     <Input
                                         id="name"
@@ -204,7 +204,7 @@ export default function ProfilePage({ mustVerifyEmail, status }: { mustVerifyEma
                                         name="name"
                                         required
                                         autoComplete="name"
-                                        placeholder="Полное имя"
+                                        placeholder="Username"
                                     />
 
                                     <InputError className="mt-2" message={errors.name} />

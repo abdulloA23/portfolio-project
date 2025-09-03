@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             LanguageProficiencySeeder::class,
-            SkillCategorySeeder::class,
             AdditionCategorySeeder::class,
         ]);
     }

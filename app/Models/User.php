@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Employer\Employer;
+use App\Models\JobSeeker\Profile\JobSeekerProfile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -64,4 +66,16 @@ class User extends Authenticatable
             'phone_verified_at' => $this->freshTimestamp(),
         ])->save();
     }
+
+// В модели User
+    public function profile()
+    {
+        return $this->hasOne(JobSeekerProfile::class, 'user_id', 'id');
+    }
+
+    public function employer()
+    {
+        return $this->hasOne(Employer::class, 'user_id', 'id');
+    }
+
 }

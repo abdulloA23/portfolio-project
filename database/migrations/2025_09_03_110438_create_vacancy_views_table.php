@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_seeker_skills', function (Blueprint $table) {
+        Schema::create('vacancy_views', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->onDelete('cascade');
-            $table->string('name')->nullable();
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
+            $table->foreignId('vacancy_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->timestamp('viewed_at')->useCurrent();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_seeker_skills');
+        Schema::dropIfExists('vacancy_views');
     }
 };

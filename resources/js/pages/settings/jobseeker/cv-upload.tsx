@@ -217,7 +217,7 @@ export default function CvUpload() {
                                 </div>
                                 {errors.file}
                                 <div className="flex items-center gap-4">
-                                    <Button disabled={processing}>Сохранить</Button>
+                                    <Button type='submit' disabled={processing}>Сохранить</Button>
                                     {/*<Transition*/}
                                     {/*    show={recentlySuccessful}*/}
                                     {/*    enter="transition ease-in-out"*/}

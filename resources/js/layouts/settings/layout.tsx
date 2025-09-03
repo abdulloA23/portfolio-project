@@ -6,6 +6,7 @@ import { type NavItem, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode } from 'react';
 import {
+    Building2Icon,
     KeyIcon,
     KeyRoundIcon,
     LockIcon,
@@ -55,6 +56,19 @@ export default function SettingsLayout({ children,size='xl' }: {children:ReactNo
                 title: 'Резюме (CV)',
                 href: '/settings/jobseeker',
                 icon: UploadIcon,
+            });
+        }
+    }else if(role==='employer'){
+        const profileIndex = sidebarNavItems.findIndex(item =>
+            'title' in item && item.title === 'Профиль'
+        );
+
+        // Вставляем новый пункт сразу после "Профиль"
+        if (profileIndex !== -1) {
+            sidebarNavItems.splice(profileIndex + 1, 0, {
+                title: 'Доп. информация',
+                href: '/settings/employer',
+                icon: Building2Icon,
             });
         }
     }

@@ -20,7 +20,6 @@ class JobSeekerProfile extends Model
         'middle_name',
         'birth_date',
         'gender',
-        'phone',
         'location',
         'address',
         'summary'

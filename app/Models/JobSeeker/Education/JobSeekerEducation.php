@@ -13,10 +13,9 @@ class JobSeekerEducation extends Model
         'institution',
         'degree',
         'field_of_study',
-        'start_date',
-        'end_date',
+        'start_year',
+        'end_year',
         'description',
-        'is_current',
         'sort_order'
     ];
 
@@ -25,8 +24,5 @@ class JobSeekerEducation extends Model
         return $this->belongsTo(JobSeekerProfile::class);
     }
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-    ];
+
 }

@@ -10,6 +10,6 @@ class LanguageProficiency extends Model
 
     protected $fillable = [
         'level',
-        'name'
+        'title'
     ];
 }

@@ -15,6 +15,7 @@ use App\Models\JobSeeker\Profile\JobSeekerProfile;
 use App\Models\JobSeeker\Skill\JobSeekerSkill;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -50,6 +51,7 @@ class JobSeekerController extends Controller
         }
 
         $data = $response->json()['response'];
+//        dd($data);
 
         $db = DB::transaction(function () use ($data) {
             // 1. Создание профиля
@@ -74,7 +76,6 @@ class JobSeekerController extends Controller
             $nextOrderEducation = $profile->education()->max('sort_order') + 1;
             $nextOrderExperiences = $profile->experiences()->max('sort_order') + 1;
             $nextOrderLanguage = $profile->languages()->max('sort_order') + 1;
-            $nextOrderAddition = $profile->additions()->max('sort_order') + 1;
 
             // 2. Ссылки
             foreach ($data['profile']['links'] ?? [] as $link) {
@@ -89,7 +90,6 @@ class JobSeekerController extends Controller
                 $profile->skills()->create([
                     'job_seeker_profile_id' => $profile->id,
                     'name' => $skill['name'],
-                    'skill_category_id' => $skill['skill_category_id'] ?? 1,
                     'sort_order' => $nextOrderSkill ?? 1
                 ]);
                 $nextOrderSkill++;
@@ -101,15 +101,14 @@ class JobSeekerController extends Controller
                     'institution' => $edu['institution'],
                     'degree' => $edu['degree'],
                     'field_of_study' => $edu['field_of_study'],
-                    'start_date' => !empty($edu['start_date'])
-                        ? Carbon::parse($edu['start_date'])->format('Y-m-d')
-                        : null,
-                    'end_date' => !empty($edu['end_date'])
-                        ? Carbon::parse($edu['end_date'])->format('Y-m-d')
-                        : null,
+                    'start_year' => !empty($edu['start_year'])
+                        ?(string) $edu['start_year']
+                        : '',
+                    'end_year' => !empty($edu['end_year'])
+                        ?(string) $edu['end_year']
+                        : '',
                     'description' => $edu['description'] ?? null,
                     'job_seeker_profile_id' => $profile->id,
-                    'is_current' => $edu['is_current'] ?? false,
                     'sort_order' => $nextOrderEducation ?? 1
                 ]);
                 $nextOrderEducation++;
@@ -146,18 +145,6 @@ class JobSeekerController extends Controller
                 $nextOrderLanguage++;
             }
 
-            // 7. Дополнения
-            foreach ($data['additions'] ?? [] as $add) {
-                $profile->additions()->create([
-                    'job_seeker_profile_id' => $profile->id,
-                    'title' => $add['title'],
-                    'description' => $add['description'] ?? null,
-                    'addition_category_id' => $add['addition_category_id'] ?? 1,
-                    'sort_order' => $nextOrderAddition ?? 1
-                ]);
-                $nextOrderAddition++;
-            }
-
             return response()->json([
                 'message' => 'Резюме успешно сохранено',
                 'profile_id' => $profile->id
@@ -185,108 +172,94 @@ class JobSeekerController extends Controller
             'profile' => $profile
         ]);
     }
-    public function patch(PatchJobSeekerRequest $request, JobSeekerProfile $profile):RedirectResponse
+    public function patch(PatchJobSeekerRequest $request):RedirectResponse
     {
         $validated = $request->validated();
 
+        $profile = Auth::user()->profile;
+
         DB::transaction(function () use ($validated, $profile) {
-            // Update main profile data
             $profile->update([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'middle_name' => $validated['middle_name'] ?? null,
                 'birth_date' => $validated['birth_date'] ?? null,
-                'gender' => $validated['gender'],
+                'gender' => $validated['gender'] ?? 'unspecified',
                 'address' => $validated['address'] ?? null,
                 'summary' => $validated['summary'] ?? null,
                 'location' => $validated['location'] ?? null,
             ]);
 
-            // Update education
             if (isset($validated['education'])) {
                 $profile->education()->delete();
-                foreach ($validated['education'] as $edu) {
+                foreach ($validated['education'] as $key => $edu) {
                     $profile->education()->create([
-                        'id' => $edu['id'],
                         'institution' => $edu['institution'],
                         'degree' => $edu['degree'],
                         'field_of_study' => $edu['field_of_study'],
-                        'start_date' => $edu['start_date'],
-                        'end_date' => $edu['end_date'] ?? null,
+                        'start_year' => $edu['start_year'],
+                        'end_year' => $edu['end_year'] ?? null,
                         'description' => $edu['description'] ?? null,
-                        'is_current' => $edu['is_current'],
-                        'sort_order' => $edu['sort_order']
+                        'sort_order' => $key+1
                     ]);
                 }
             }
 
-            // Update experiences
             if (isset($validated['experiences'])) {
                 $profile->experiences()->delete();
-                foreach ($validated['experiences'] as $exp) {
+                foreach ($validated['experiences'] as $key=> $exp) {
                     $profile->experiences()->create([
-                        'id' => $exp['id'],
                         'job_title' => $exp['job_title'],
                         'company_name' => $exp['company_name'],
                         'company_address' => $exp['company_address'],
                         'start_date' => $exp['start_date'],
                         'end_date' => $exp['end_date'] ?? null,
                         'description' => $exp['description'] ?? null,
-                        'is_current' => $exp['is_current'],
-                        'sort_order' => $exp['sort_order']
+                        'sort_order' => $key+1
                     ]);
                 }
             }
 
-            // Update skills
             if (isset($validated['skills'])) {
                 $profile->skills()->delete();
-                foreach ($validated['skills'] as $skill) {
+                foreach ($validated['skills'] as $key=>$skill) {
                     $profile->skills()->create([
-                        'id' => $skill['id'],
                         'name' => $skill['name'],
-                        'skill_category_id' => $skill['skill_category_id'],
-                        'sort_order' => $skill['sort_order']
+                        'sort_order' => $key+1
                     ]);
                 }
             }
 
-            // Update languages
             if (isset($validated['languages'])) {
                 $profile->languages()->delete();
-                foreach ($validated['languages'] as $lang) {
+                foreach ($validated['languages'] as $key=> $lang) {
                     $profile->languages()->create([
-                        'id' => $lang['id'],
                         'name' => $lang['name'],
                         'language_proficiency_id' => $lang['language_proficiency_id'],
-                        'sort_order' => $lang['sort_order']
+                        'sort_order' => $key
                     ]);
                 }
             }
 
-            // Update additions
-            if (isset($validated['additions'])) {
-                $profile->additions()->delete();
-                foreach ($validated['additions'] as $add) {
-                    $profile->additions()->create([
-                        'id' => $add['id'],
-                        'title' => $add['title'],
-                        'description' => $add['description'] ?? null,
-                        'addition_category_id' => $add['addition_category_id'],
-                        'sort_order' => $add['sort_order']
-                    ]);
-                }
-            }
-
-            // Update links
             if (isset($validated['links'])) {
                 $profile->links()->delete();
-                foreach ($validated['links'] as $link) {
+                foreach ($validated['links'] as $key=> $link) {
                     $profile->links()->create([
-                        'id' => $link['id'],
                         'url' => $link['url'],
                         'type' => $link['type'],
-                        'sort_order' => $link['sort_order']
+                        'sort_order' => $key
+                    ]);
+                }
+            }
+
+            if (isset($validated['additions'])) {
+                $profile->additions()->delete();
+                foreach ($validated['additions'] as $key=> $addition) {
+                    $profile->additions()->create([
+                        'title' => $addition['title'],
+                        'description' => $addition['description'],
+                        'addition_category_id' => $addition['addition_category_id'],
+                        'sort_order' => $key
                     ]);
                 }
             }

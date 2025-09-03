@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('institution')->nullable();
             $table->string('degree')->nullable();
             $table->string('field_of_study')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('start_year')->nullable();
+            $table->string('end_year')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_current')->default(false);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
         });

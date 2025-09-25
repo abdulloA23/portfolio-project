@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vacancy_saves', function (Blueprint $table) {
+        Schema::create('industries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vacancy_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->cascadeOnDelete();
-            $table->timestamp('saved_at')->useCurrent();
+            $table->string('name');
+            $table->string('slug');
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancy_saves');
+        Schema::dropIfExists('industries');
     }
 };

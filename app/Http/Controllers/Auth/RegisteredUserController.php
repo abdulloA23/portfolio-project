@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employer\Employer;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +36,7 @@ class RegisteredUserController extends Controller
             'email' => 'required_without:phone|string|lowercase|email|max:255|unique:'.User::class.'|nullable',
             'phone' => 'required_without:email|string|unique:'.User::class.'|nullable',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|string|in:jobseeker,employer',
         ]);
 
         $userData = [
@@ -45,12 +47,20 @@ class RegisteredUserController extends Controller
         if ($request->filled('email')) {
             $userData['email'] = $request->email;
         }
-        
+
         if ($request->filled('phone')) {
             $userData['phone'] = $request->phone;
         }
 
         $user = User::create($userData);
+
+        $user->assignRole($request->role);
+
+        if ($request->role==='employer') {
+            Employer::create([
+                'user_id' => $user->id,
+            ]);
+        }
 
         event(new Registered($user));
 

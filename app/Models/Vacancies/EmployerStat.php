@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Vakancies;
+namespace App\Models\Vacancies;
 
 use Illuminate\Database\Eloquent\Model;
 

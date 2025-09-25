@@ -23,16 +23,5 @@ Route::middleware('auth')->group(function () {
     Route::put('settings/password', [PasswordController::class, 'update'])
         ->middleware('throttle:6,1')
         ->name('password.update');
-    Route::middleware('role:jobseeker')->group(function () {
-        Route::get('/settings/jobseeker',[JobSeekerController::class,'index'])->name('jobseeker.index');
-        Route::post('/settings/jobseeker/upload',[JobSeekerController::class,'store'])->name('jobseeker.store');
-        Route::get('/settings/jobseeker/edit', [JobSeekerController::class, 'edit'])->name('jobseeker.edit');
-        Route::patch('settings/jobseeker/patch', [JobSeekerController::class, 'patch'])->name('jobseeker.patch');
-    });
-
-    Route::middleware('role:employer')->group(function () {
-        Route::get('/settings/employer',[\App\Http\Controllers\EmployerController::class,'edit'])->name('employer.edit');
-        Route::patch('/settings/employer',[\App\Http\Controllers\EmployerController::class,'patch'])->name('employer.patch');
-    });
 });
 

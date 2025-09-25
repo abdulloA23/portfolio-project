@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Vakancies;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Vacancy extends Model
+class Embedding extends Model
 {
     //
 }

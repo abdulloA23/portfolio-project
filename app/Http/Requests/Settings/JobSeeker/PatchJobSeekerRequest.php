@@ -37,6 +37,7 @@ class PatchJobSeekerRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'summary' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
+            'industry_id' => ['nullable', 'integer', 'max:255'],
 
             'education' => ['array'],
             'education.*.institution' => ['required', 'string', 'max:255'],

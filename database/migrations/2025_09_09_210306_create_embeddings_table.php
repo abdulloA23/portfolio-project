@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vacancy_clicks', function (Blueprint $table) {
+        Schema::create('embeddings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vacancy_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->cascadeOnDelete();
-            $table->timestamp('clicked_at')->useCurrent();
+            $table->morphs('embeddable');
+            $table->json('vector');
+            $table->timestamps();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancy_clicks');
+        Schema::dropIfExists('embeddings');
     }
 };

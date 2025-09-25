@@ -21,7 +21,7 @@ import { usePage } from '@inertiajs/react';
 import { SharedData } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
-import { getCategoryName, getLanguageLevel, getLinkIcon } from '@/lib/jobseeker.data';
+import { getCategoryName, getIndustryName, getLanguageLevel, getLinkIcon } from '@/lib/jobseeker.data';
 
 
 
@@ -44,15 +44,15 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
     }
 
     return (
-        <div className="max-w-4xl mx-auto bg-background">
+        <div className="mx-auto max-w-4xl bg-background">
             {/* Actions */}
             {showActions && (
-                <div className="flex justify-end gap-2 mb-6 print:hidden">
+                <div className="mb-6 flex justify-end gap-2 print:hidden">
                     <Button variant="outline" onClick={handlePrint}>
                         Печать
                     </Button>
                     <Button onClick={handleDownload}>
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="mr-2 h-4 w-4" />
                         Скачать PDF
                     </Button>
                 </div>
@@ -62,7 +62,7 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
             <Card className="mb-6">
                 <CardContent className="p-8">
                     <div className="flex items-start gap-6">
-                        <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full flex items-center justify-center text-4xl font-bold text-primary flex-shrink-0">
+                        <div className="flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 text-4xl font-bold text-primary">
                             <Avatar className="h-32 w-32 overflow-hidden">
                                 <AvatarImage
                                     className="rounded-full object-cover"
@@ -70,17 +70,18 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                                     alt={auth.user.name}
                                 />
                                 <AvatarFallback className="rounded-lg bg-neutral-200 text-4xl text-black dark:bg-neutral-700 dark:text-white">
-                                    {getInitials(auth.user.name)}
+                                    {data.first_name[0]}
+                                    {data.last_name[0]}
                                 </AvatarFallback>
                             </Avatar>
                         </div>
                         <div className="flex-1">
-                            <h1 className="text-4xl font-bold mb-2">
+                            <h1 className="mb-2 text-4xl font-bold">
                                 {data.first_name} {data.last_name} {data.middle_name ?? ''}
                             </h1>
-                            <p className="text-xl text-muted-foreground mb-4">{data.summary}</p>
+                            <p className="mb-4 text-xl text-muted-foreground">{data.summary}</p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                                 <div className="flex items-center gap-2">
                                     <Mail className="h-4 w-4 text-primary" />
                                     <span>{auth.user.email}</span>
@@ -89,10 +90,14 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                                     <MapPin className="h-4 w-4 text-primary" />
                                     <span>{data.location}</span>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <Briefcase className="h-4 w-4 text-primary" />
+                                    <span>{getIndustryName(data.industry_id)}</span>
+                                </div>
                                 {data.birth_date && (
                                     <div className="flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-primary" />
-                                        <span>{new Date(data.birth_date).toLocaleDateString("ru-RU")}</span>
+                                        <span>{new Date(data.birth_date).toLocaleDateString('ru-RU')}</span>
                                     </div>
                                 )}
                             </div>
@@ -101,7 +106,7 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* Left Column */}
                 <div className="space-y-6">
                     {/* Skills */}
@@ -133,7 +138,7 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {data.languages.map((lang, index) => (
-                                <div key={index} className="flex justify-between items-center">
+                                <div key={index} className="flex items-center justify-between">
                                     <span className="font-medium">{lang.name}</span>
                                     <Badge variant="outline" className="text-xs">
                                         {getLanguageLevel(lang.language_proficiency_id)}
@@ -153,15 +158,14 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {data.links.map((link, index) => {
-                                const Icon = getLinkIcon(link.type)
+                                const Icon = getLinkIcon(link.type);
                                 return (
                                     <div key={index} className="flex items-center gap-2">
                                         <Icon className="h-4 w-4 text-primary" />
                                         <span className="font-light">{link.url}</span>
                                     </div>
-                                )
+                                );
                             })}
-
                         </CardContent>
                     </Card>
 
@@ -189,7 +193,7 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                 </div>
 
                 {/* Right Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                     {/* Experience */}
                     <Card>
                         <CardHeader>
@@ -203,14 +207,18 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                                 <div key={index} className="relative">
                                     {index > 0 && <Separator className="mb-6" />}
                                     <div className="space-y-3">
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex items-start justify-between">
                                             <div>
                                                 <h3 className="text-lg font-semibold">{exp.job_title}</h3>
-                                                <p className="text-primary font-medium">{exp.company_name} {exp.company_address ? `- ${exp.company_address}` : ''}</p>
+                                                <p className="font-medium text-primary">
+                                                    {exp.company_name} {exp.company_address ? `- ${exp.company_address}` : ''}
+                                                </p>
                                             </div>
-                                            <Badge variant="outline">{exp.start_date} - {exp.end_date ?? 'Настоящее время'}</Badge>
+                                            <Badge variant="outline">
+                                                {exp.start_date} - {exp.end_date ?? 'Настоящее время'}
+                                            </Badge>
                                         </div>
-                                        <p className="text-muted-foreground text-sm leading-relaxed">{exp.description}</p>
+                                        <p className="text-sm leading-relaxed text-muted-foreground">{exp.description}</p>
                                     </div>
                                 </div>
                             ))}
@@ -229,12 +237,14 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                             {data.education.map((edu, index) => (
                                 <div key={index} className="space-y-2">
                                     {index > 0 && <Separator className="mb-4" />}
-                                    <div className="flex justify-between items-start">
+                                    <div className="flex items-start justify-between">
                                         <div>
                                             <h3 className="font-semibold">{edu.degree}</h3>
-                                            <p className="text-primary font-medium">{edu.institution}</p>
+                                            <p className="font-medium text-primary">{edu.institution}</p>
                                         </div>
-                                        <Badge variant="outline">{edu.start_year} - {edu.end_year ?? 'Настоящее время'}</Badge>
+                                        <Badge variant="outline">
+                                            {edu.start_year} - {edu.end_year ?? 'Настоящее время'}
+                                        </Badge>
                                     </div>
                                     {edu.description && <p className="text-sm text-muted-foreground">{edu.description}</p>}
                                 </div>
@@ -291,5 +301,5 @@ export function CVViewer({ data, showActions = true }: CVViewerProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

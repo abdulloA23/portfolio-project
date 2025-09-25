@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('total_vacancies')->default(0);
             $table->integer('total_views')->default(0);
             $table->integer('total_applications')->default(0);
-            $table->integer('total_hires')->default(0);
+            $table->integer('total_conversion')->default(0);
             $table->timestamp('last_update')->useCurrent();
         });
     }

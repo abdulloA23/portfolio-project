@@ -1,5 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -17,3 +20,17 @@ export function formatDate(date: Date) {
     return `${y}-${m}-${d}`;
 }
 
+
+export function useVacancyView() {
+    const { patch } = useForm()
+
+    function requestSendToView(vacancyId:number) {
+        patch(route('vacancies.view', vacancyId), {
+            onError: () => {
+                console.error("Ошибка при отметке просмотра")
+            }
+        })
+    }
+
+    return { requestSendToView }
+}

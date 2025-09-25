@@ -16,9 +16,13 @@ return new class extends Migration
             $table->foreignId('job_seeker_profile_id')->constrained('job_seeker_profiles')->cascadeOnDelete();
             $table->foreignId('vacancy_id')->constrained('vacancies')->cascadeOnDelete();
             $table->enum('status', ['applied', 'saved', 'rejected', 'accepted'])->default('applied');
+            $table->text('description')->nullable();
+            $table->string('salary_exception')->nullable();
+            $table->date('get_to_work')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

@@ -3,13 +3,11 @@ import { Form, Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import HeadingSmall from '@/components/heading-small';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { File, FileText, Image as ImageIcon, X, Upload } from 'lucide-react';
+import { File, FileText, Image as ImageIcon, X, Upload, SaveIcon, Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { useInitials } from '@/hooks/use-initials';
 import { toast } from 'sonner';
-import { Transition } from '@headlessui/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -217,7 +215,8 @@ export default function CvUpload() {
                                 </div>
                                 {errors.file}
                                 <div className="flex items-center gap-4">
-                                    <Button type='submit' disabled={processing}>Сохранить</Button>
+                                    <Button type='submit' disabled={processing}> {!processing ? <SaveIcon /> : <Loader2Icon className="animate-spin" />}
+                                        {processing ? 'Сохранение...' : 'Сохранить'}</Button>
                                     {/*<Transition*/}
                                     {/*    show={recentlySuccessful}*/}
                                     {/*    enter="transition ease-in-out"*/}

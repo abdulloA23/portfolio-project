@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('salary_start')->default(0);
             $table->integer('salary_end')->default(0);
             $table->string('location');
-
+            $table->foreignId('industry_id')->constrained('industries')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->text('benefits')->nullable();         // льготы и бонусы
             $table->text('responsibility')->nullable();   // обязанности
@@ -27,13 +27,14 @@ return new class extends Migration
             $table->string('experience')->nullable();     // опыт работы (например: "2 года", "без опыта")
             $table->string('education')->nullable();
             $table->json('skills')->nullable();
-            $table->enum('employment_type',[    'full',        // Полная занятость
+            $table->enum('type',[    'full',        // Полная занятость
                 'part',        // Частичная занятость
                 'remote',      // Удалённая работа
                 'contract',    // Контракт / проектная работа
                 'internship',  // Стажировка
                 'temporary'    // Временная работа (сезонная, подмены)
-            ]);
+            ])->default('full');
+            $table->enum('status',['active','inactive'])->default('active');
 
             $table->timestamps();
         });

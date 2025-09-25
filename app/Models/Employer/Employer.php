@@ -4,6 +4,7 @@ namespace App\Models\Employer;
 
 use App\Models\JobSeeker\Profile\Link;
 use App\Models\User;
+use App\Models\Vacancies\Vacancy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,5 +27,10 @@ class Employer extends Model
     public function links(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany(Link::class, 'linkable');
+    }
+
+    public function vacancies()
+    {
+        return $this->hasMany(Vacancy::class);
     }
 }

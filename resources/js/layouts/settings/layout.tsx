@@ -58,7 +58,8 @@ export default function SettingsLayout({ children,size='xl' }: {children:ReactNo
                 icon: UploadIcon,
             });
         }
-    }else if(role==='employer'){
+    }
+    else if(role==='employer'){
         const profileIndex = sidebarNavItems.findIndex(item =>
             'title' in item && item.title === 'Профиль'
         );

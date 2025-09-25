@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->enum('gender', ['male', 'female','unspecified'])->default('unspecified');
             $table->text('summary')->nullable();
+            $table->foreignId('industry_id')->constrained('industries')->onDelete('cascade');
             $table->timestamps();
         });
     }

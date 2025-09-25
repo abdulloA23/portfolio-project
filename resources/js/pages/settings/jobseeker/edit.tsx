@@ -1,5 +1,15 @@
 import type { BreadcrumbItem, SharedData } from '@/types';
-import { Gender, JobSeekerProfile, Education, Skill, Language, Link, Experience, Addition } from '@/types/jobseeker';
+import {
+    Gender,
+    JobSeekerProfile,
+    Education,
+    Skill,
+    Language,
+    Link,
+    Experience,
+    Addition,
+    JobSeekerProfileForm, Industry
+} from '@/types/jobseeker';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import HeadingSmall from '@/components/heading-small';
@@ -35,10 +45,10 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { DatePickerInput } from '@/components/date-picker-input';
-import { languageProficiency } from '@/lib/jobseeker.data';
+import { industries, languageProficiency } from '@/lib/jobseeker.data';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { CVViewer } from '@/components/cv-viewer';
+import { DatePickerInput } from '@/components/jobseeker/date-picker-input';
+import { CVViewer } from '@/components/jobseeker/cv-viewer';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,14 +58,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-    profile: JobSeekerProfile;
+    profile: JobSeekerProfileForm;
     message?: string;
     type?: "success" | 'info' | 'error';
 }
 
 export default function EditPage({ profile, message, type }: Props) {
     const [isEditing, setIsEditing] = useState(false);
-    const { data, setData, patch, processing, errors } = useForm<JobSeekerProfile>(profile);
+    const { data, setData, patch, processing, errors } = useForm<JobSeekerProfileForm>(profile);
     const [showCVPreview, setShowCVPreview] = useState(false)
 
     // const grouped = data.additions.reduce((acc, item) => {
@@ -68,7 +78,7 @@ export default function EditPage({ profile, message, type }: Props) {
 
 
     const updateArrayField = <T,>(
-        field: keyof JobSeekerProfile,
+        field: keyof JobSeekerProfileForm,
         index: number,
         updates: Partial<T>
     ) => {
@@ -77,16 +87,17 @@ export default function EditPage({ profile, message, type }: Props) {
         setData(field as any, array);
     };
 
-    const removeArrayItem = (field: keyof JobSeekerProfile, index: number, confirmMessage?: string) => {
+    const removeArrayItem = (field: keyof JobSeekerProfileForm, index: number, confirmMessage?: string) => {
         if (confirmMessage && !window.confirm(confirmMessage)) return;
 
+        // @ts-ignore
         const array = [...(data[field] as any[])];
         array.splice(index, 1);
         setData(field as any, array);
     };
 
     const addArrayItem = <T,>(
-        field: keyof JobSeekerProfile,
+        field: keyof JobSeekerProfileForm,
         template: T
     ) => {
         const array = [...(data[field] as T[])];
@@ -336,6 +347,25 @@ export default function EditPage({ profile, message, type }: Props) {
                                                 placeholder="Адрес"
                                             />
                                         </div>
+                                    </div>
+                                    <div>
+                                        <Label>Отрасль</Label>
+                                        <Select
+                                            disabled={!isEditing}
+                                            value={(data.industry_id.toString())}
+                                            onValueChange={(value) => setData('industry_id', Number(value))}
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Выберите отрасль" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {industries.map((industry:Industry) => (
+                                                    <SelectItem key={industry.id} value={industry.id.toString()}>
+                                                        {industry.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <div>
                                         <Label>Описание</Label>

@@ -7,7 +7,6 @@ import HeadingSmall from '@/components/heading-small';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building, Edit, Eye, Loader2Icon, SaveIcon, UserIcon, XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CVViewer } from '@/components/cv-viewer';
 import { FormEvent, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';

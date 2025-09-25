@@ -10,9 +10,12 @@ import AuthLayout from '@/layouts/auth-layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatPhoneNumber } from '@/lib/utils';
 import { useState } from 'react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function Register() {
     const [phone,setPhone] = useState("")
+    const [role, setRole] = useState('jobseeker');
+
     return (
         <AuthLayout title="Создать учетную запись" description="Введите свои данные ниже, чтобы создать учетную запись">
             <Head title="Регистрация" />
@@ -110,6 +113,28 @@ export default function Register() {
                                     placeholder="Подтверждение пароля"
                                 />
                                 <InputError message={errors.password_confirmation} />
+                            </div>
+
+                            <div>
+                                <RadioGroup
+                                    value={role}
+                                    onValueChange={setRole}
+                                    className="flex gap-4"
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="jobseeker" id="jobseeker" />
+                                        <Label htmlFor="jobseeker" className="text-sm font-medium">
+                                            Работник
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="employer" id="employer" />
+                                        <Label htmlFor="employer" className="text-sm font-medium">
+                                            Работодатель
+                                        </Label>
+                                    </div>
+                                </RadioGroup>
+                                <input type="hidden" name="role" value={role} />
                             </div>
 
                             <Button type="submit" className="mt-2 w-full" tabIndex={5}>

@@ -5,7 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Employer\Employer;
 use App\Models\JobSeeker\Profile\JobSeekerProfile;
+use App\Models\Vacancies\Favorite;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -77,5 +79,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Employer::class, 'user_id', 'id');
     }
-
+    public function favorites():HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Settings\JobSeeker\EditJobSeekerRequest;
 use App\Http\Requests\Settings\JobSeeker\IndexJobSeekerRequest;
 use App\Http\Requests\Settings\JobSeeker\PatchJobSeekerRequest;
 use App\Http\Requests\Settings\JobSeeker\StoreCVUploadRequest;
+use App\Models\Industry;
 use App\Models\JobSeeker\Addition\JobSeekerAddition;
 use App\Models\JobSeeker\Education\JobSeekerEducation;
 use App\Models\JobSeeker\Experience\JobSeekerExperience;
@@ -54,9 +55,11 @@ class JobSeekerController extends Controller
 //        dd($data);
 
         $db = DB::transaction(function () use ($data) {
-            // 1. Создание профиля
+            $industrySlug = $data['profile']['industry'] ?? 'other';
+            $industry = Industry::where('slug', $industrySlug)->first();
+            $industryId = $industry->id;
             $profile = JobSeekerProfile::firstOrCreate([
-                'user_id' => auth()->id() ?? 1, // или фейковый ID
+                'user_id' => auth()->id(),
                 'first_name' => $data['profile']['first_name'] ?? '',
                 'last_name' => $data['profile']['last_name'] ?? '',
                 'middle_name' => $data['profile']['middle_name'] ?? '',
@@ -69,6 +72,7 @@ class JobSeekerController extends Controller
                     ? $data['profile']['gender']
                     : 'unspecified',
                 'summary' => $data['profile']['summary'] ?? '',
+                'industry_id'=>$industryId
             ]);
 
             // Счётчики sort_order
@@ -179,6 +183,9 @@ class JobSeekerController extends Controller
         $profile = Auth::user()->profile;
 
         DB::transaction(function () use ($validated, $profile) {
+            $industryId = $validated['industry_id'] ?? 12;
+            $industry = Industry::where('id', $industryId)->first();
+            $industryId = $industry->id;
             $profile->update([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
@@ -188,6 +195,7 @@ class JobSeekerController extends Controller
                 'address' => $validated['address'] ?? null,
                 'summary' => $validated['summary'] ?? null,
                 'location' => $validated['location'] ?? null,
+                'industry_id' => $industryId,
             ]);
 
             if (isset($validated['education'])) {

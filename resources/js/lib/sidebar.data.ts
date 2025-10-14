@@ -1,4 +1,4 @@
-import { FileSearch, FileText, Heart, Inbox, LayoutGrid, UserIcon } from 'lucide-react';
+import { FileSearch, FileText, Heart, Inbox, LayoutGrid, MessageCircleIcon, UserIcon } from 'lucide-react';
 import { NavItem } from '@/types';
 
 export const jobSeekerSidebarItems: NavItem[] = [
@@ -16,6 +16,11 @@ export const jobSeekerSidebarItems: NavItem[] = [
         title: "Сохраненные",
         href: '/vacancy/jobseeker/saves',
         icon: Heart, // "избранное/сохранённые"
+    },
+    {
+        title:"Чат",
+        href:"/chat",
+        icon:MessageCircleIcon,
     },
     {
         title:'Профиль',
@@ -39,6 +44,11 @@ export const employerSidebarItems:NavItem[] = [
         title:"Отклики",
         href:'/vacancy-applications',
         icon:Inbox
+    },
+    {
+        title:"Чат",
+        href:"/chat",
+        icon:MessageCircleIcon
     },
     {
         title:'Профиль',

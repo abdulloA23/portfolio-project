@@ -284,8 +284,8 @@ export default function ProfilePage({ mustVerifyEmail, status }: { mustVerifyEma
                                 {/*)}*/}
 
                                 <div className="flex items-center gap-4">
-                                    <Button disabled={processing} onSubmit={() => (recentlySuccessful ? setAvatarPreview(null) : undefined)}>
-                                        Сохранить
+                                    <Button className={'cursor-pointer'} type={'submit'} onSubmit={() => (recentlySuccessful ? setAvatarPreview(null) : undefined)}>
+                                        Сохранить {recentlySuccessful}
                                     </Button>
 
                                     <Transition

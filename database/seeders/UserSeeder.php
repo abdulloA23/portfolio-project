@@ -54,29 +54,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create initial admin and job seeker users
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@admin.com'],
-            [
-                'name' => 'Admin',
-                'email' => 'admin@admin.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-        $jobseeker = User::updateOrCreate(
-            ['email' => 'jobseeker@jobseeker.com'],
-            [
-                'name' => 'Job Seeker',
-                'email' => 'jobseeker@jobseeker.com',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
 
-        // Assign roles to initial users
-        $admin->assignRole('admin');
-        $jobseeker->assignRole('jobseeker');
 
         // Create employer users (IDs 1–7)
         $employerUsers = [
@@ -103,13 +81,22 @@ class UserSeeder extends Seeder
         }
 
         // Create job seeker users (IDs 8–47 for 35–40 profiles)
-        $firstNames = ['Алишер', 'Фарход', 'Дилшод', 'Зарина', 'Мехрангез', 'Шахло', 'Рустам', 'Нодира', 'Саид', 'Гулноз', 'Джамшед', 'Мавлуда', 'Фирдавс', 'Зухра', 'Хуршед', 'Парвина', 'Сафар', 'Мубина', 'Сабрина', 'Икбол'];
-        $lastNames = ['Рахимов', 'Саидов', 'Холматова', 'Нурматов', 'Шарипова', 'Мирзоев', 'Кодирова', 'Абдуллоев', 'Хайдарова', 'Рахмонов', 'Алиева', 'Исмоилов', 'Гафурова', 'Каримов', 'Сафарова'];
+        $maleFirstNames = ['Алишер', 'Фарход', 'Дилшод', 'Рустам', 'Саид', 'Джамшед', 'Фирдавс', 'Хуршед', 'Сафар', 'Икбол'];
+        $femaleFirstNames = ['Зарина', 'Мехрангез', 'Шахло', 'Нодира', 'Гулноз', 'Мавлуда', 'Зухра', 'Парвина', 'Мубина', 'Сабрина'];
+        $maleLastNames = ['Рахимов', 'Саидов', 'Нурматов', 'Мирзоев', 'Абдуллоев', 'Рахмонов', 'Исмоилов', 'Каримов'];
+        $femaleLastNames = ['Холматова', 'Шарипова', 'Кодирова', 'Хайдарова', 'Алиева', 'Гафурова', 'Сафарова', 'Рахимова', 'Саидова', 'Нурматова', 'Мирзоева', 'Абдуллоева', 'Рахмонова', 'Исмоилова', 'Каримова'];
+
         for ($i = 8; $i <= 47; $i++) {
+            // Randomly decide gender (50% chance for male or female)
+            $isMale = rand(0, 1) === 0;
+            $firstName = $isMale ? $maleFirstNames[array_rand($maleFirstNames)] : $femaleFirstNames[array_rand($femaleFirstNames)];
+            $lastName = $isMale ? $maleLastNames[array_rand($maleLastNames)] : $femaleLastNames[array_rand($femaleLastNames)];
+            $gender = $isMale ? 'male' : 'female';
+
             $user = User::updateOrCreate(
                 ['id' => $i],
                 [
-                    'name' => $firstNames[array_rand($firstNames)] . ' ' . $lastNames[array_rand($lastNames)],
+                    'name' => $firstName . ' ' . $lastName,
                     'email' => 'jobseeker' . $i . '@example.tj',
                     'password' => Hash::make('password123'),
                     'email_verified_at' => now(),

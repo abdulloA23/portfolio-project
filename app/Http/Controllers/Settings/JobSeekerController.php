@@ -220,8 +220,12 @@ class JobSeekerController extends Controller
                         'job_title' => $exp['job_title'],
                         'company_name' => $exp['company_name'],
                         'company_address' => $exp['company_address'],
-                        'start_date' => $exp['start_date'],
-                        'end_date' => $exp['end_date'] ?? null,
+                        'start_date' => !empty($exp['start_date'])
+                            ? Carbon::parse($exp['start_date'])->format('Y-m-d')
+                            : null,
+                        'end_date' =>!empty($exp['end_date'])
+                            ? Carbon::parse($exp['end_date'])->format('Y-m-d')
+                            : null,
                         'description' => $exp['description'] ?? null,
                         'sort_order' => $key+1
                     ]);

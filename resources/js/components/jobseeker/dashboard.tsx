@@ -607,12 +607,18 @@ export default function JobSeekerDashboard({
                                                hasJobSeeker,
                                                vacancies,
                                                totalCountApplication = 0,
+                                               totalCountViews = 0,
+                                               totalCountAllVacancies = 0,
+                                               totalCountRecommendedVacancies=0,
                                                recommended,
                                            }: {
     jobseeker: JobSeekerProfile;
     hasJobSeeker: boolean;
     vacancies: VacancyPagination;
     totalCountApplication: number;
+    totalCountViews:number;
+    totalCountAllVacancies:number;
+    totalCountRecommendedVacancies:number;
     recommended: RecommendedPagination;
 }) {
     const [showCVPreview, setShowCVPreview] = useState(false);
@@ -942,7 +948,7 @@ export default function JobSeekerDashboard({
         <>
             <div className="@container/main p-2 flex flex-1 flex-col gap-2">
                 <div className="flex flex-col gap-4 md:gap-6">
-                    <AnalyticsCard totalCountApplication={totalCountApplication} totalCountMessages={0} totalCountViewProfile={0} />
+                    <AnalyticsCard totalCountApplication={totalCountApplication} totalCountRecommendedVacancies={totalCountRecommendedVacancies} totalCountAllVacancies={totalCountAllVacancies} totalCountViewProfile={totalCountViews} />
                     <div className="flex items-center justify-between">
                         <span className="text-3xl font-bold">Вакансии</span>
                         {hasJobSeeker ? (

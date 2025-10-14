@@ -75,6 +75,7 @@ class VacancyController extends Controller
         if ($employer){
             $validated['employer_id'] = $employer->id;
         }else{
+            Log::log('info','Employer errors');
             return back()->withErrors([]);
         }
 

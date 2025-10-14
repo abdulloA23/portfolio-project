@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Industry;
 use App\Models\JobSeeker\Education\JobSeekerEducation;
-use App\Models\JobSeeker\Experience\JobSeekerExperience; // Added import
+use App\Models\JobSeeker\Experience\JobSeekerExperience;
 use App\Models\JobSeeker\Language\JobSeekerLanguage;
 use App\Models\JobSeeker\Language\LanguageProficiency;
 use App\Models\JobSeeker\Profile\JobSeekerProfile;
@@ -21,9 +21,11 @@ class JobSeekerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Define common Tajik names and locations
-        $firstNames = ['Алишер', 'Фарход', 'Дилшод', 'Зарина', 'Мехрангез', 'Шахло', 'Рустам', 'Нодира', 'Саид', 'Гулноз', 'Джамшед', 'Мавлуда', 'Фирдавс', 'Зухра', 'Хуршед', 'Парвина', 'Сафар', 'Мубина', 'Сабрина', 'Икбол', 'Бехруз', 'Нигора', 'Шахриёр', 'Мадина', 'Фаррух'];
-        $lastNames = ['Рахимов', 'Саидов', 'Холматова', 'Нурматов', 'Шарипова', 'Мирзоев', 'Кодирова', 'Абдуллоев', 'Хайдарова', 'Рахмонов', 'Алиева', 'Исмоилов', 'Гафурова', 'Каримов', 'Сафарова', 'Махмудов', 'Худойбердиева', 'Азизов', 'Собирзода', 'Джалилова'];
+        // Define Tajik names separated by gender
+        $maleFirstNames = ['Алишер', 'Фарход', 'Дилшод', 'Рустам', 'Саид', 'Джамшед', 'Фирдавс', 'Хуршед', 'Сафар', 'Икбол', 'Бехруз', 'Шахриёр', 'Фаррух'];
+        $femaleFirstNames = ['Зарина', 'Мехрангез', 'Шахло', 'Нодира', 'Гулноз', 'Мавлуда', 'Зухра', 'Парвина', 'Мубина', 'Сабрина', 'Нигора', 'Мадина'];
+        $maleLastNames = ['Рахимов', 'Саидов', 'Нурматов', 'Мирзоев', 'Абдуллоев', 'Рахмонов', 'Исмоилов', 'Каримов', 'Азизов', 'Собирзода'];
+        $femaleLastNames = ['Холматова', 'Шарипова', 'Кодирова', 'Хайдарова', 'Алиева', 'Гафурова', 'Сафарова', 'Худойбердиева', 'Джалилова'];
         $locations = ['Душанбе', 'Худжанд', 'Куляб', 'Бохтар', 'Гиссар', 'Хорог', 'Пенджикент', 'Курган-Тюбе', 'Рашт', 'Исфара'];
         $genders = ['male', 'female', 'unspecified'];
 
@@ -68,7 +70,7 @@ class JobSeekerSeeder extends Seeder
                 continue; // Skip if vacancy not found
             }
             $industry = Industry::find($vacancy->industry_id);
-            $skills = $vacancy->skills??[];
+            $skills = $vacancy->skills ?? [];
             $isEnglishRequired = in_array($vacancy->title, ['Преподаватель английского языка', 'Гид по Памиру']);
 
             for ($i = 0; $i < $count; $i++) {
@@ -81,10 +83,15 @@ class JobSeekerSeeder extends Seeder
                 }
                 $usedUserIds[] = $userId;
 
+                // Select gender
+                $gender = $genders[array_rand($genders)];
+
+                // Select name based on gender
+                $firstName = $gender === 'male' ? $maleFirstNames[array_rand($maleFirstNames)] : ($gender === 'female' ? $femaleFirstNames[array_rand($femaleFirstNames)] : $maleFirstNames[array_rand($maleFirstNames)]);
+                $lastName = $gender === 'male' ? $maleLastNames[array_rand($maleLastNames)] : ($gender === 'female' ? $femaleLastNames[array_rand($femaleLastNames)] : $maleLastNames[array_rand($maleLastNames)]);
+
                 // Create job seeker profile
                 $birthDate = Carbon::today()->subYears(rand(20, 40));
-                $firstName = $firstNames[array_rand($firstNames)];
-                $lastName = $lastNames[array_rand($lastNames)];
                 $profile = JobSeekerProfile::create([
                     'user_id' => $userId,
                     'first_name' => $firstName,
@@ -92,8 +99,8 @@ class JobSeekerSeeder extends Seeder
                     'middle_name' => null,
                     'birth_date' => $birthDate,
                     'location' => $locations[array_rand($locations)],
-                    'address' => 'ул. ' . $firstNames[array_rand($firstNames)] . ', д. ' . rand(1, 100),
-                    'gender' => $genders[array_rand($genders)],
+                    'address' => 'ул. ' . ($gender === 'male' ? $maleFirstNames[array_rand($maleFirstNames)] : $femaleFirstNames[array_rand($femaleFirstNames)]) . ', д. ' . rand(1, 100),
+                    'gender' => $gender,
                     'summary' => 'Мотивированный кандидат с навыками, подходящими для работы в ' . ($industry->name ?? 'различных отраслях') . '. Готов внести вклад в развитие компании.',
                     'industry_id' => $industry->id ?? Industry::where('slug', 'other')->first()->id,
                 ]);
@@ -113,7 +120,7 @@ class JobSeekerSeeder extends Seeder
                     'sort_order' => 1,
                 ]);
 
-                // Create work experience (if required by vacancy)
+                // Create work experience
                 $experienceYears = $vacancy->experience === 'Без опыта' ? 0 : rand(1, 5);
                 if ($experienceYears > 0) {
                     JobSeekerExperience::create([
@@ -138,7 +145,7 @@ class JobSeekerSeeder extends Seeder
                     ]);
                 }
 
-                // Create language proficiencies (Tajik, Russian, and English if required)
+                // Create language proficiencies
                 $nativeProficiency = LanguageProficiency::where('level', 'native')->first();
                 if (!$nativeProficiency) {
                     throw new \Exception('Language proficiency level "native" not found.');
@@ -190,7 +197,7 @@ class JobSeekerSeeder extends Seeder
             }
         }
 
-        // Ensure exactly 35–40 profiles by creating additional profiles if needed
+        // Ensure 35–40 profiles by creating additional profiles if needed
         $currentProfileCount = JobSeekerProfile::count();
         while ($currentProfileCount < 35) {
             while (in_array($userId, $usedUserIds) && $userId <= 47) {
@@ -207,9 +214,14 @@ class JobSeekerSeeder extends Seeder
             $skills = json_decode($vacancy->skills, true) ?? [];
             $isEnglishRequired = in_array($vacancy->title, ['Преподаватель английского языка', 'Гид по Памиру']);
 
+            // Select gender
+            $gender = $genders[array_rand($genders)];
+
+            // Select name based on gender
+            $firstName = $gender === 'male' ? $maleFirstNames[array_rand($maleFirstNames)] : ($gender === 'female' ? $femaleFirstNames[array_rand($femaleFirstNames)] : $maleFirstNames[array_rand($maleFirstNames)]);
+            $lastName = $gender === 'male' ? $maleLastNames[array_rand($maleLastNames)] : ($gender === 'female' ? $femaleLastNames[array_rand($femaleLastNames)] : $maleLastNames[array_rand($maleLastNames)]);
+
             $birthDate = Carbon::today()->subYears(rand(20, 40));
-            $firstName = $firstNames[array_rand($firstNames)];
-            $lastName = $lastNames[array_rand($lastNames)];
             $profile = JobSeekerProfile::create([
                 'user_id' => $userId,
                 'first_name' => $firstName,
@@ -217,8 +229,8 @@ class JobSeekerSeeder extends Seeder
                 'middle_name' => null,
                 'birth_date' => $birthDate,
                 'location' => $locations[array_rand($locations)],
-                'address' => 'ул. ' . $firstNames[array_rand($firstNames)] . ', д. ' . rand(1, 100),
-                'gender' => $genders[array_rand($genders)],
+                'address' => 'ул. ' . ($gender === 'male' ? $maleFirstNames[array_rand($maleFirstNames)] : $femaleFirstNames[array_rand($femaleFirstNames)]) . ', д. ' . rand(1, 100),
+                'gender' => $gender,
                 'summary' => 'Мотивированный кандидат с навыками, подходящими для работы в ' . ($industry->name ?? 'различных отраслях') . '.',
                 'industry_id' => $industry->id ?? Industry::where('slug', 'other')->first()->id,
             ]);

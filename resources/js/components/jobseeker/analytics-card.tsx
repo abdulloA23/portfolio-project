@@ -16,10 +16,10 @@ interface AnalyticsCardProps {
     icon?: React.ReactNode
 }
 
-export function AnalyticsCard({totalCountApplication=0,totalCountMessages=0,totalCountViewProfile=0}:{totalCountApplication:number,totalCountMessages:number,totalCountViewProfile:number}) {
+export function AnalyticsCard({totalCountApplication=0,totalCountViewProfile=0,totalCountAllVacancies=0,totalCountRecommendedVacancies=0}:{totalCountApplication:number,totalCountAllVacancies:number,totalCountRecommendedVacancies:number,totalCountViewProfile:number}) {
 
     return (
-        <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
             <Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">
                 <CardHeader>
                     <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Просмотр профиля</CardDescription>
@@ -48,10 +48,22 @@ export function AnalyticsCard({totalCountApplication=0,totalCountMessages=0,tota
 
             <Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">
                 <CardHeader>
-                    <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Сообщения</CardDescription>
+                    <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Кол-во вакансий</CardDescription>
                     <CardTitle
                         className="text-2xl font-semibold text-blue-700 tabular-nums @[250px]/card:text-3xl dark:text-blue-300">
-                        {totalCountMessages}
+                        {totalCountAllVacancies}
+                    </CardTitle>
+                    <CardAction className="flex items-center justify-center">
+                        <Inbox className="h-8 w-8 text-blue-500" />
+                    </CardAction>
+                </CardHeader>
+            </Card>
+            <Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">
+                <CardHeader>
+                    <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Кол-во рекомендаций</CardDescription>
+                    <CardTitle
+                        className="text-2xl font-semibold text-blue-700 tabular-nums @[250px]/card:text-3xl dark:text-blue-300">
+                        {totalCountRecommendedVacancies}
                     </CardTitle>
                     <CardAction className="flex items-center justify-center">
                         <Inbox className="h-8 w-8 text-blue-500" />

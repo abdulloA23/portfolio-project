@@ -20,7 +20,10 @@ interface JobseekerProps {
     hasJobSeeker: boolean
     vacancies: VacancyPagination
     recommended:RecommendedPagination,
-    totalCountApplication: number
+    totalCountApplication: number,
+    totalCountViews: number,
+    totalCountAllVacancies:number,
+    totalCountRecommendedVacancies:number,
 }
 
 interface EmployerProps {
@@ -43,7 +46,10 @@ export default function Dashboard(props: Props) {
                         hasJobSeeker={props.hasJobSeeker}
                         vacancies={props.vacancies}
                         totalCountApplication={props.totalCountApplication}
+                        totalCountViews = {props.totalCountViews}
                         recommended={props.recommended}
+                        totalCountAllVacancies={props.totalCountAllVacancies}
+                        totalCountRecommendedVacancies={props.totalCountRecommendedVacancies}
                     />
                 </div>
             </AppLayout>

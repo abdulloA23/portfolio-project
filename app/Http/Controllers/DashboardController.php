@@ -318,6 +318,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Vacancy\Jobseeker\SaveVacancyRequest;
+use App\Models\CandidateView;
 use App\Models\Employer\Employer;
 use App\Models\Industry;
 use App\Models\JobSeeker\Profile\JobSeekerProfile;
@@ -528,7 +529,9 @@ class DashboardController extends Controller
             Log::info('Recommended Data', ['recommended' => $recommendedVacancies->toArray()]);
 
             $totalCountApplication = Application::where('job_seeker_profile_id', $jobseeker?->id)->count();
-
+            $totalCountViews = CandidateView::where('job_seeker_profile_id',$jobseeker?->id)->count();
+            $totalCountAllVacancies = $vacancies->toArray()['total'];
+            $totalCountRecommendedVacancies = $recommendedVacancies->toArray()['total'];
             $response = [
                 'role' => 'jobseeker',
                 'recommended' => $recommendedVacancies,
@@ -536,6 +539,9 @@ class DashboardController extends Controller
                 'hasJobSeeker' => $hasJobSeeker,
                 'vacancies' => $vacancies,
                 'totalCountApplication' => $totalCountApplication,
+                'totalCountViews' => $totalCountViews,
+                'totalCountAllVacancies' => $totalCountAllVacancies,
+                'totalCountRecommendedVacancies' => $totalCountRecommendedVacancies,
                 'industries' => Industry::all(['id', 'name']),  // Добавлен список отраслей для Select
                 'filters' => [
                     'search' => $search,
@@ -547,7 +553,8 @@ class DashboardController extends Controller
                     'industry' => $industry,  // Добавлен в filters
                 ],
             ];
-        } elseif ($user->hasRole('employer')) {
+        }
+        elseif ($user->hasRole('employer')) {
             $search = $validated['search'] ?? '';
             $industry = $validated['industry'] ?? null;
 

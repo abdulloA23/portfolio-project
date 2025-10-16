@@ -162,7 +162,6 @@ export default function VacancyCard({
         );
     }
 
-    console.log(vacancy)
 
     // Конвертируем score в проценты (0-100)
     const scorePercent = Math.round(score * 100);

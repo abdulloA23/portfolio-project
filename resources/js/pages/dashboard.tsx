@@ -6,6 +6,7 @@ import JobSeekerDashboard from '@/components/jobseeker/dashboard';
 import EmployerDashboard from '@/components/employer/dashboard';
 import { Recommended, RecommendedPagination, Vacancy, VacancyPagination, VacancyWithEmployer } from '@/types/employer';
 import { JobSeekerPagination, JobSeekerProfile } from '@/types/jobseeker';
+import { useEcho } from '@laravel/echo-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,7 +36,6 @@ interface EmployerProps {
 type Props = JobseekerProps | EmployerProps
 
 export default function Dashboard(props: Props) {
-
     if (props.role === "jobseeker") {
         return (
             <AppLayout breadcrumbs={breadcrumbs}>

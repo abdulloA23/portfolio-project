@@ -16,11 +16,8 @@ Route::post('/recommended-user',[\App\Http\Controllers\RecommendedController::cl
 
 Route::middleware('auth')->group(function () {
     Route::get('/chat',[ChatController::class,'index'])->name('chat');
-    Route::get('/chat/users', [ChatController::class, 'getUsers'])->name('chat.users');
-    Route::get('/chat/{userId}', [ChatController::class, 'getChat'])->name('chat.get');
-    Route::post('/chat/messages', [ChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/chat/mark-read', [ChatController::class, 'markAsRead'])->name('chat.read');
-    Route::get('/chat/{chat}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::get('/chat/conversation/{user}', [ChatController::class, 'conversation']);
+    Route::post('/chat/send', [ChatController::class, 'send']);
 });
 
 require __DIR__.'/settings.php';

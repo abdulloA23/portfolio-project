@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\MessageRead;
 use App\Events\MessageSent;
+use App\Models\Chat\Conversation;
+use App\Models\Chat\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,54 @@ class ChatController extends Controller
     public function index()
     {
 
-        return Inertia::render('chat',['users'=>[]]);
+        $users = User::where('id', '!=', Auth::id())->get();
+        return inertia('chat', [
+            'users' => $users
+        ]);
+    }
+
+    public function conversation(User $user)
+    {
+        $authId = Auth::id();
+        $conversation = Conversation::where(function ($q) use ($authId, $user) {
+            $q->where('user_one_id', $authId)->where('user_two_id', $user->id);
+        })->orWhere(function ($q) use ($authId, $user) {
+            $q->where('user_one_id', $user->id)->where('user_two_id', $authId);
+        })->first();
+
+        if (!$conversation) {
+            $conversation = Conversation::create([
+                'user_one_id' => min($authId, $user->id),
+                'user_two_id' => max($authId, $user->id),
+            ]);
+        }
+
+        $messages = $conversation->messages()->orderBy('created_at')->get();
+
+        return response()->json([
+            'conversation_id' => $conversation->id,
+            'messages' => $messages
+        ]);
+    }
+
+    public function send(Request $request)
+    {
+        $data = $request->validate([
+            'conversation_id' => 'required|integer|exists:conversations,id',
+            'receiver_id' => 'required|integer|exists:users,id',
+            'body' => 'nullable|string',
+        ]);
+
+        $message = Message::create([
+            'conversation_id' => $data['conversation_id'],
+            'sender_id' => Auth::id(),
+            'receiver_id' => $data['receiver_id'],
+            'body' => $data['body'],
+        ]);
+
+        broadcast(new MessageSent($message))->toOthers();
+
+        return response()->json($message);
     }
 //    public function getChat($userId)
 //    {

@@ -3,41 +3,31 @@
 namespace App\Events;
 
 use App\Models\Chat\Message;
-use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class MessageSent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use SerializesModels;
 
-    public $message;
-    public function __construct(Message $message)
-    {
-        $this->message = $message;
-    }
-
+    public function __construct(public Message $message) {}
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('chat.'.$this->message->chat_id);
+        return new PrivateChannel('conversation.' . $this->message->conversation_id);
     }
 
     public function broadcastWith(): array
     {
-        return  [
+        return [
             'id' => $this->message->id,
-            'chat_id' => $this->message->chat_id,
+            'body' => $this->message->body,
             'sender_id' => $this->message->sender_id,
-            'sender_name' => $this->message->sender->name,
-            'content' => $this->message->content,
-            'type' => $this->message->type,
-            'file_path' => $this->message->file_path,
-            'file_name' => $this->message->file_name,
-            'is_read' => $this->message->is_read,
+            'receiver_id' => $this->message->receiver_id,
             'created_at' => $this->message->created_at->toDateTimeString(),
         ];
     }
 }
+

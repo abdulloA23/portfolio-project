@@ -1,7 +1,7 @@
 import { motion, Variants } from 'framer-motion';
 import { Users } from 'lucide-react';
 
-const NoUsersPlaceholder: React.FC = () => {
+const  NoUsersPlaceholder: React.FC = () => {
     // Варианты анимации
     const containerVariants: Variants = {
         hidden: { opacity: 0, y: 20 },

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Chat\Group;
 use App\Models\Employer\Employer;
 use App\Models\JobSeeker\Profile\JobSeekerProfile;
 use App\Models\Vacancies\Favorite;
@@ -83,4 +84,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favorite::class);
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class,'group_users');
+    }
+
+
 }

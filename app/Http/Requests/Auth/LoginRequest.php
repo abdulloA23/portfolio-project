@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Разрешить выполнение запроса.
      */
     public function authorize(): bool
     {
@@ -20,9 +20,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Правила валидации.
      */
     public function rules(): array
     {
@@ -34,7 +32,28 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Кастомные сообщения об ошибках на русском языке.
+     */
+    public function messages(): array
+    {
+        return [
+            // 📧 Email
+            'email.required_without' => 'Укажите email или номер телефона.',
+            'email.string' => 'Email должен быть строкой.',
+            'email.email' => 'Укажите корректный адрес электронной почты.',
+
+            // 📱 Телефон
+            'phone.required_without' => 'Укажите номер телефона или email.',
+            'phone.string' => 'Номер телефона должен быть строкой.',
+
+            // 🔐 Пароль
+            'password.required' => 'Пароль обязателен для заполнения.',
+            'password.string' => 'Пароль должен быть строкой.',
+        ];
+    }
+
+    /**
+     * Аутентификация пользователя.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -53,7 +72,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                $this->filled('email') ? 'email' : 'phone' => __('auth.failed'),
+                $this->filled('email') ? 'email' : 'phone' => 'Неверный логин или пароль.',
             ]);
         }
 
@@ -61,7 +80,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * Ограничение количества попыток входа.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -76,15 +95,12 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            $this->filled('email') ? 'email' : 'phone' => __('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            $this->filled('email') ? 'email' : 'phone' => "Слишком много попыток входа. Попробуйте через {$seconds} сек.",
         ]);
     }
 
     /**
-     * Get the rate limiting throttle key for the request.
+     * Генерация ключа ограничения по IP и логину.
      */
     public function throttleKey(): string
     {

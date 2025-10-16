@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Chat\Group;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

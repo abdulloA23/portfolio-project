@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Log;
 
 class RecommendedController extends Controller
 {
+    public $fastApiUrl;
+    public function __construct(){
+        $this->fastApiUrl = env('FAST_API_URl');
+    }
     public function recommendVacancy($profileId)
     {
         $profile = JobSeekerProfile::with(['experiences', 'skills', 'education'])->findOrFail($profileId);
@@ -24,7 +28,7 @@ class RecommendedController extends Controller
             'text' => $v->toText()
         ])->toArray();
 
-        $response = Http::post('http://127.0.0.1:9000/match_vacancy', [
+        $response = Http::post($this->fastApiUrl.'/match_vacancy', [
             'cv_id' => $profile->id,
             'cv_text' => $cvText,
             'vacancies' => $vacancies,
@@ -73,7 +77,7 @@ class RecommendedController extends Controller
                 'id' => $v->id,
                 'text' => $v->toText()
             ])->toArray();
-            $response = Http::post('http://127.0.0.1:9000/match_user', [
+            $response = Http::post($this->fastApiUrl.'/match_user', [
                 'vacancy_id' => $vacancy->id,
                 'vacancy_text' => $vacancyText,
                 'profiles' => $profiles,

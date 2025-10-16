@@ -5,6 +5,7 @@ namespace App\Models\Employer;
 use App\Models\JobSeeker\Profile\Link;
 use App\Models\User;
 use App\Models\Vacancies\Vacancy;
+use App\Models\Employer\EmployerView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,5 +33,10 @@ class Employer extends Model
     public function vacancies()
     {
         return $this->hasMany(Vacancy::class);
+    }
+
+    public function views()
+    {
+        return $this->hasMany(EmployerView::class, 'employer_id');
     }
 }

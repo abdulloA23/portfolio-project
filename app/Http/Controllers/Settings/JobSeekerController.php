@@ -27,12 +27,15 @@ use Smalot\PdfParser\Parser;
 
 class JobSeekerController extends Controller
 {
-
+    public $fastApiUrl;
+    public function __construct(){
+        $this->fastApiUrl = env('FAST_API_URl');
+    }
     public function index(IndexJobSeekerRequest $request):Response
     {
         $validated = $request->validated();
 
-        return Inertia::render('settings/jobseeker/cv-upload');
+        return Inertia::render('settings/jobseeker/cv-upload',[]);
     }
 
     public function store(StoreCVUploadRequest $request):RedirectResponse
@@ -46,7 +49,7 @@ class JobSeekerController extends Controller
             file_get_contents($file->getRealPath()),
             $file->getClientOriginalName()
         )
-            ->post('http://127.0.0.1:9000/extract-text/');
+            ->post($this->fastApiUrl.'/extract-text/');
         if ($response->failed()) {
             return back()->withErrors(['file' => 'Ошибка при извлечении текста']);
         }

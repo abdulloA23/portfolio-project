@@ -18,6 +18,7 @@ use App\Models\Vacancies\Application;
 use App\Models\Vacancies\Favorite;
 use App\Models\Vacancies\Vacancy;
 use App\Models\Vacancies\VacancyView;
+use App\Models\Employer\EmployerView;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -204,6 +205,14 @@ class VacancyController extends Controller
                 'vacancy_id' => $vacancy->id,
                 'user_id' => auth()->id(),
             ]);
+
+            // Fix employer profile view on vacancy view by jobseeker
+            if ($vacancy->employer_id) {
+                EmployerView::firstOrCreate([
+                    'employer_id' => $vacancy->employer_id,
+                    'user_id' => auth()->id(),
+                ]);
+            }
         }catch (\Exception $exception){
             return back()->withErrors([]);
         }

@@ -196,7 +196,6 @@ export default function ChatInterface({ users, selectedUser }: ChatInterfaceProp
             fetch(`/chat/conversation/${selectedUser.id}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data)
                     setConversationId(data.conversation_id);
                     setMessages(data.messages);
                 });
@@ -205,22 +204,15 @@ export default function ChatInterface({ users, selectedUser }: ChatInterfaceProp
             setConversationId(null);
         }
     }, [selectedUser]);
-    useEffect(() => {
-        if (!conversationId) return;
+    useEcho(
+        `orders `,
+        'MessageSent',
+        (e) => {
+            console.log(e);
+            // setMessages(prev => [...prev, e.message]); // можно сразу обновлять чат
+        }
+    );
 
-        // const {stopListening} = useEcho(
-        //     `conversation.${conversationId}`,
-        //     'MessageSent',
-        //     (e) => {
-        //         console.log(e);
-        //         // setMessages(prev => [...prev, e.message]); // можно сразу обновлять чат
-        //     }
-        // );
-
-        // return () => {
-        //     stopListening();
-        // };
-    }, [conversationId]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -296,12 +288,12 @@ export default function ChatInterface({ users, selectedUser }: ChatInterfaceProp
                                 className="pr-10 rounded-full"
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-//
+                                        sendMessage()
                                     }
                                 }}
                             />
                         </div>
-                        <Button size="icon" className="rounded-full text-white" disabled={inputValue.trim() === ""}>
+                        <Button onClick={sendMessage} size="icon" className="rounded-full text-white" disabled={inputValue.trim() === ""}>
                             <Send className="h-5 w-5" />
                         </Button>
                     </div>

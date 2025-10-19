@@ -12,7 +12,6 @@ Broadcast::channel('orders', function () {
 
 Broadcast::channel('conversation.{conversation_id}', function (User $user, $conversation_id) {
     $conversation = Conversation::find($conversation_id);
-    Log::log('info','dd');
     if (!$conversation) {
         return false;
     }

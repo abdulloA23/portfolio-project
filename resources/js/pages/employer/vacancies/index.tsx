@@ -20,7 +20,7 @@ import {
     MapPin, MessageSquare,
     Plus,
     Trash2,
-    TrendingUp,
+    TrendingUp, User2,
     Users, Zap
 } from 'lucide-react';
 import React, { FormEvent } from 'react';
@@ -91,7 +91,7 @@ export default function IndexVacancyPage({vacancies,totalViews,totalApplications
                                                 <div className="flex-1">
                                                     <div className="mb-2 flex items-center gap-3">
                                                         <CardTitle className="text-xl">{vacancy.title}</CardTitle>
-                                                        <Badge variant={vacancy.status === 'active' ? 'default' : 'secondary'}>
+                                                        <Badge className={'text-white'} variant={vacancy.status === 'active' ? 'default' : 'secondary'}>
                                                             {vacancy.status === 'active' ? 'Активна' : 'Неактивна'}
                                                         </Badge>
                                                     </div>
@@ -188,6 +188,12 @@ export default function IndexVacancyPage({vacancies,totalViews,totalApplications
                                                     Опубликовано {new Date(vacancy.created_at).toLocaleDateString('ru-RU')}
                                                 </span>
                                                 <div className="flex gap-2">
+                                                    <Button asChild variant={'outline'} size={'sm'}>
+                                                        <Link href={`/dashboard?industry=${vacancy.industry_id}&tab=recommended`}>
+                                                            <User2 />
+                                                            Рекомендации
+                                                        </Link>
+                                                    </Button>
                                                     <Button asChild variant="outline" size="sm">
                                                         <Link href={`/vacancy-applications?search=&vacancy_id=${vacancy.id}`}>
                                                             <MessageSquare className="mr-2 h-4 w-4" />

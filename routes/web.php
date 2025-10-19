@@ -5,7 +5,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    $users = \App\Models\User::all()->count();
+    $employers = \App\Models\Employer\Employer::all()->count();
+    return Inertia::render('welcome',[
+        'users'=>$users,
+        'employers'=>$employers
+    ]);
 })->name('home');
 
 Route::middleware(['auth','verified'])->group(function () {
@@ -18,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat',[ChatController::class,'index'])->name('chat');
     Route::get('/chat/conversation/{user}', [ChatController::class, 'conversation']);
     Route::post('/chat/send', [ChatController::class, 'send']);
+    Route::get('/chat-conversation/{userID}', [ChatController::class, 'chatConversation'])->name('chat.conversation');
 });
 
 require __DIR__.'/settings.php';

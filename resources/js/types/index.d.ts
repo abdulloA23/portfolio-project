@@ -31,6 +31,7 @@ export interface SharedData {
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     [key: string]: unknown;
+
 }
 
 export interface User {

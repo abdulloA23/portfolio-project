@@ -13,7 +13,13 @@ configureEcho({
     wsPort: import.meta.env.VITE_REVERB_PORT,
     wssPort: import.meta.env.VITE_REVERB_PORT,
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss']
+    enabledTransports: ['ws', 'wss'],
+    // Добавьте эту строку:
+    auth: {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        }
+    }
 });
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';

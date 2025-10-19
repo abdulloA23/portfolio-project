@@ -1,16 +1,23 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { PaginationLink, VacancyPagination } from '@/types/employer';
-import { Link } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { JobSeekerPagination } from '@/types/jobseeker';
+import { PaginationLink, RecommendedPagination, VacancyPagination } from '@/types/employer';
+import { Link, usePage } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+
+type Pagination = JobSeekerPagination | RecommendedPagination | VacancyPagination;
 
 interface PaginateProps {
-    data: JobSeekerPagination;
+    data: Pagination;
 }
 
 const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
-    if (!data || !data.links) return null;
+    // Получаем текущие фильтры из usePage
+    const { filters } = usePage<{ filters: { search?: string; industry?: string | null } }>().props;
+
+    if (!data || !data.links || !data.data || data.data.length === 0) {
+        return null;
+    }
 
     const totalPages = data.last_page;
     const currentPage = data.current_page;
@@ -18,26 +25,38 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
     const goForward10 = Math.min(currentPage + 10, totalPages);
     const goBack10 = Math.max(currentPage - 10, 1);
 
-    if (!data || !data.links || !data.data || data.data.length === 0) {
-        return null;
-    }
+    // Функция для формирования URL с сохранением текущих параметров
+    const buildUrl = (page: number | string) => {
+        const params = new URLSearchParams();
+        params.set('page', page.toString());
 
+        // Сохраняем текущие фильтры
+        if (filters?.search) {
+            params.set('search', filters.search);
+        }
+        if (filters?.industry) {
+            params.set('industry', filters.industry);
+        }
 
+        return `${data.path}?${params.toString()}`;
+    };
 
     return (
         <div className="flex flex-wrap items-center gap-2">
             {/* Кнопка -10 */}
             {currentPage > 10 && (
                 <Link
-                    href={data.path + `?page=${goBack10}`}
+                    href={buildUrl(goBack10)}
                     className="px-3 py-1 border rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    preserveState
+                    preserveScroll
                 >
                     <ChevronsLeft className="w-4 h-4" />
                 </Link>
             )}
 
             {data.links.map((link: PaginationLink, index: number) => {
-                let content: React.ReactNode = <span dangerouslySetInnerHTML={{ __html: link.label }} />;
+                let content: React.ReactNode = link.label;
 
                 // Заменяем Previous и Next на стрелки
                 if (link.label === '&laquo;' || link.label.toLowerCase().includes('previous')) {
@@ -46,15 +65,23 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
                     content = <ChevronRight className="w-4 h-4" />;
                 }
 
-                return link.url ? (
+                const pageNumber = link.label === '&laquo;' || link.label.toLowerCase().includes('previous')
+                    ? currentPage - 1
+                    : link.label === '&raquo;' || link.label.toLowerCase().includes('next')
+                        ? currentPage + 1
+                        : parseInt(link.label);
+
+                return link.url && !isNaN(pageNumber) ? (
                     <Link
                         key={index}
-                        href={link.url}
+                        href={buildUrl(pageNumber)}
                         className={`px-3 py-1 border rounded-md ${
                             link.active
                                 ? 'bg-primary text-white border-blue-600'
                                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
                         }`}
+                        preserveState
+                        preserveScroll
                     >
                         {content}
                     </Link>
@@ -72,8 +99,10 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
             {/* Кнопка +10 */}
             {currentPage + 10 <= totalPages && (
                 <Link
-                    href={data.path + `?page=${goForward10}`}
+                    href={buildUrl(goForward10)}
                     className="px-3 py-1 border rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    preserveState
+                    preserveScroll
                 >
                     <ChevronsRight className="w-4 h-4" />
                 </Link>

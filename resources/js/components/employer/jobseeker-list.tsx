@@ -113,12 +113,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { CVViewer } from '@/components/jobseeker/cv-viewer';
 import { useState } from 'react';
 import { JobSeekerProfile } from '@/types/jobseeker';
+import { VacancyWithEmployer } from '@/types/employer';
+import { Link } from '@inertiajs/react';
 
 export function JobseekerCard({
+                                    vacancy,
                                   jobseeker,
                                   score = 0,           // число от 0 до 1
                                   showScore = false    // включение отображения процента
-                              }: { jobseeker: JobSeekerProfile; score?: number; showScore?: boolean }) {
+                              }: { vacancy?:VacancyWithEmployer,jobseeker: JobSeekerProfile; score?: number; showScore?: boolean }) {
     const [showCVPreview, setShowCVPreview] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
 
@@ -150,8 +153,8 @@ export function JobseekerCard({
                     <Avatar>
                         <AvatarImage
                             className="rounded-full object-cover"
-                            src={jobseeker.user.avatar ? `/storage/images/${jobseeker.user.avatar}` : undefined}
-                            alt={jobseeker.user.name}
+                            src={jobseeker.user ? (jobseeker.user.avatar ? `/storage/images/${jobseeker.user.avatar}` : undefined):""}
+                            alt={jobseeker.user ? jobseeker.user.name : ''}
                         />
                         <AvatarFallback>
                             {jobseeker.first_name[0]}
@@ -163,7 +166,7 @@ export function JobseekerCard({
                     <div className="flex-1">
                         <div className="flex items-center space-x-2">
                             <h3 className="font-semibold">
-                                {jobseeker.first_name} {jobseeker.last_name}
+                                {jobseeker.first_name} {jobseeker.last_name} {vacancy ? ' - ':''} <Link className={'text-primary'}>{vacancy?.title}</Link>
                             </h3>
 
                             {/* Бейдж с процентом score */}
@@ -218,9 +221,11 @@ export function JobseekerCard({
                             <CVViewer data={jobseeker} showActions={false} />
                         </DialogContent>
                     </Dialog>
-                    <Button size="sm" variant="outline">
-                        <MessageCircle className="mr-1 h-4 w-4" />
-                        Связаться
+                    <Button asChild size="sm" variant="outline">
+                        <Link href={route('chat.conversation',jobseeker.user?.id)}>
+                            <MessageCircle className="mr-1 h-4 w-4" />
+                            Написать
+                        </Link>
                     </Button>
                 </div>
             </CardContent>

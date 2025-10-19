@@ -17,7 +17,7 @@ import {
     Play,
     Target,
     Sparkles,
-    Menu, X, LogOut, LayoutGrid
+    Menu, X, LogOut, LayoutGrid, Check
 } from 'lucide-react';
 import AppearanceToggleTab from '@/components/appearance-tabs';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
@@ -85,13 +85,21 @@ const testimonials = [
         rating: 5,
     },
 ]
-export default function Welcome() {
+const roundToNearestTen = (value: number): number => {
+    return Math.round(value / 10) * 10;
+};
+
+export default function Welcome({users,employers}:{users:number,employers:number}) {
     const { auth } = usePage<SharedData>().props;
-    const [searchQuery, setSearchQuery] = useState("")
     const [currentTestimonial, setCurrentTestimonial] = useState(0)
     const [isVisible, setIsVisible] = useState(false)
     const cleanup = useMobileNavigation();
-
+    const stats = [
+        { number: `${roundToNearestTen(users)}+`, label: 'Активных пользователей', icon: Users },
+        { number: `${roundToNearestTen(employers)}+`, label: 'Компаний-партнеров', icon: Briefcase },
+        { number: '85%', label: 'Успешных совпадений', icon: Target },
+        { number: '24/7', label: 'Поддержка', icon: Shield },
+        ]
     const handleLogout = () => {
         cleanup();
         router.flushAll();
@@ -105,10 +113,6 @@ export default function Welcome() {
     }, [])
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    const handleSearch = () => {
-        // Simulate search functionality
-        console.log("Searching for:", searchQuery)
-    }
 
     return (
         <>
@@ -117,7 +121,7 @@ export default function Welcome() {
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
             </Head>
             <div className="min-h-screen bg-background overflow-hidden">
-                <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" >
+                <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between items-center h-16">
                             {/* Logo */}
@@ -136,7 +140,8 @@ export default function Welcome() {
                                             <Link href={route('dashboard')}>Панель управления</Link>
                                         </Button>
                                         <Button variant="ghost">
-                                            <Link className="block text-red-500 w-full" method="post" href={route('logout')} as="button" onClick={handleLogout}>
+                                            <Link className="block text-red-500 w-full" method="post"
+                                                  href={route('logout')} as="button" onClick={handleLogout}>
                                                 Выйти
                                             </Link>
                                         </Button>
@@ -174,7 +179,9 @@ export default function Welcome() {
                                                     <Link href={route('dashboard')}> Панель управление</Link>
                                                 </Button>
                                                 <Button variant="ghost">
-                                                    <Link className="block text-red-500 w-full justify-start" method="post" href={route('logout')} as="button" onClick={handleLogout}>
+                                                    <Link className="block text-red-500 w-full justify-start"
+                                                          method="post" href={route('logout')} as="button"
+                                                          onClick={handleLogout}>
                                                         Выйти
                                                     </Link>
                                                 </Button>
@@ -232,7 +239,7 @@ export default function Welcome() {
                         <h1 className="text-4xl sm:text-7xl font-bold text-white mb-6 leading-tight">
                             Найдите работу
                             <span
-                                className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent block"
+                                className="text-primary block"
                             >
         мечты за минуты
       </span>
@@ -321,12 +328,7 @@ export default function Welcome() {
 
                         {/* Quick Stats */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                            {[
-                                { number: '100+', label: 'Активных пользователей', icon: Users },
-                                { number: '15+', label: 'Компаний-партнеров', icon: Briefcase },
-                                { number: '85%', label: 'Успешных совпадений', icon: Target },
-                                { number: '24/7', label: 'Поддержка', icon: Shield },
-                            ].map((stat, index) => (
+                            {stats.map((stat, index) => (
                                 <div key={index} className="text-center group">
                                     <div
                                         className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform"
@@ -340,7 +342,6 @@ export default function Welcome() {
                         </div>
                     </div>
                 </section>
-
                 {/* Featured Jobs Section */}
                 {/*<section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">*/}
                 {/*    <div className="max-w-7xl mx-auto">*/}

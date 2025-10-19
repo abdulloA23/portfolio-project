@@ -3,7 +3,17 @@
 import type React from "react"
 
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Eye, Users, Briefcase, MessageCircle, Inbox } from 'lucide-react';
+import {
+    TrendingUp,
+    TrendingDown,
+    Eye,
+    Users,
+    Briefcase,
+    MessageCircle,
+    Inbox,
+    Star,
+    ClipboardList
+} from 'lucide-react';
 
 interface AnalyticsCardProps {
     title: string
@@ -19,19 +29,19 @@ interface AnalyticsCardProps {
 export function AnalyticsCard({totalCountApplication=0,totalCountViewProfile=0,totalCountAllVacancies=0,totalCountRecommendedVacancies=0}:{totalCountApplication:number,totalCountAllVacancies:number,totalCountRecommendedVacancies:number,totalCountViewProfile:number}) {
 
     return (
-        <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-            <Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">
-                <CardHeader>
-                    <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Просмотр профиля</CardDescription>
-                    <CardTitle
-                        className="text-2xl font-bold text-blue-700 tabular-nums @[250px]/card:text-3xl dark:text-blue-300">
-                        {totalCountViewProfile}
-                    </CardTitle>
-                    <CardAction className="flex items-center justify-center">
-                        <Eye className="h-8 w-8 text-blue-500" />
-                    </CardAction>
-                </CardHeader>
-            </Card>
+        <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-1 @5xl/main:grid-cols-3">
+            {/*<Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">*/}
+            {/*    <CardHeader>*/}
+            {/*        <CardDescription className="text-sm text-blue-600 dark:text-blue-400">Просмотр профиля</CardDescription>*/}
+            {/*        <CardTitle*/}
+            {/*            className="text-2xl font-bold text-blue-700 tabular-nums @[250px]/card:text-3xl dark:text-blue-300">*/}
+            {/*            {totalCountViewProfile}*/}
+            {/*        </CardTitle>*/}
+            {/*        <CardAction className="flex items-center justify-center">*/}
+            {/*            <Eye className="h-8 w-8 text-blue-500" />*/}
+            {/*        </CardAction>*/}
+            {/*    </CardHeader>*/}
+            {/*</Card>*/}
 
             <Card className="@container/card bg-gradient-to-t from-blue-500/10 to-card shadow-xs">
                 <CardHeader>
@@ -54,7 +64,7 @@ export function AnalyticsCard({totalCountApplication=0,totalCountViewProfile=0,t
                         {totalCountAllVacancies}
                     </CardTitle>
                     <CardAction className="flex items-center justify-center">
-                        <Inbox className="h-8 w-8 text-blue-500" />
+                        <ClipboardList className="h-8 w-8 text-blue-500" />
                     </CardAction>
                 </CardHeader>
             </Card>
@@ -66,7 +76,7 @@ export function AnalyticsCard({totalCountApplication=0,totalCountViewProfile=0,t
                         {totalCountRecommendedVacancies}
                     </CardTitle>
                     <CardAction className="flex items-center justify-center">
-                        <Inbox className="h-8 w-8 text-blue-500" />
+                        <Star className="h-8 w-8 text-blue-500" />
                     </CardAction>
                 </CardHeader>
             </Card>

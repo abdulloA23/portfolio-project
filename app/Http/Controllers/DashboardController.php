@@ -323,6 +323,7 @@ use App\Models\Employer\Employer;
 use App\Models\Industry;
 use App\Models\JobSeeker\Profile\JobSeekerProfile;
 use App\Models\Recommended;
+use App\Models\User;
 use App\Models\Vacancies\Application;
 use App\Models\Vacancies\Favorite;
 use App\Models\Vacancies\Vacancy;
@@ -345,6 +346,7 @@ class DashboardController extends Controller
             'skills.*' => 'string|max:255',
             'sortBy' => 'nullable|in:relevance,date,salary_high,salary_low',
             'industry' => 'nullable|integer|exists:industries,id',
+            'tab' => 'nullable|in:search,recommended', // Validate tab parameter
         ]);
 
         $user = auth()->user();
@@ -629,6 +631,7 @@ class DashboardController extends Controller
                             'user',
                         ]);
                     },
+                    'vacancy'
                 ])
                 ->orderBy('score', 'desc')
                 ->paginate(5);
@@ -643,10 +646,13 @@ class DashboardController extends Controller
                     'industry' => $industry
                 ],
                 'vacanciesId'=>$employerVacanciesId,
+                'tab' => request()->input('tab', 'search'),
             ];
         }
 
+
         return Inertia::render('dashboard', $response);
     }
+
 
 }

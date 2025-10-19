@@ -620,10 +620,6 @@ export default function Apply({
                                                     <Eye className="h-4 w-4 mr-1" />
                                                     Детали
                                                 </Button>
-                                                <Button size="sm" variant="outline">
-                                                    <MessageCircle className="h-4 w-4 mr-1" />
-                                                    Написать
-                                                </Button>
                                             </div>
                                         </div>
                                     </CardContent>

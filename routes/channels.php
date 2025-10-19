@@ -17,4 +17,4 @@ Broadcast::channel('conversation.{conversation_id}', function (User $user, $conv
     }
 
     return $conversation->user_one_id === $user->id || $conversation->user_two_id === $user->id;
-});
+},['web','auth']);

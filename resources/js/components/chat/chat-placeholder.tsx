@@ -1,14 +1,10 @@
 import { motion, Variants } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
 import { User } from '@/types';
+import { Message } from '@/components/chat/chat-interface';
 
 
 
-interface Message {
-    id: string;
-    content: string;
-    // Добавьте другие поля, если нужно (например, createdAt, userId)
-}
 
 interface ChatPlaceholderProps {
     selectedUser: User | null|undefined;

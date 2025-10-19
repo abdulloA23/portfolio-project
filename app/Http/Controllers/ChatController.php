@@ -16,8 +16,25 @@ class ChatController extends Controller
 {
     public function index()
     {
+        $authId=Auth::id();
+        $conversations = Conversation::where(function ($q) use ($authId) {
+            $q->where('user_one_id', $authId);
+        })->orWhere(function ($q) use ($authId) {
+            $q->where('user_two_id', $authId);
+        })->get();
 
-        $users = User::where('id', '!=', Auth::id())->get();
+        $users = [];
+        foreach ($conversations as $conversation) {
+            if ($conversation->user_one_id !== $authId) {
+                $users[] = $conversation->userOne;
+            }
+            if ($conversation->user_two_id !== $authId) {
+                $users[] = $conversation->userTwo;
+            }
+        }
+
+        $users = (array_unique($users, SORT_REGULAR));
+
         return inertia('chat', [
             'users' => $users
         ]);
@@ -65,6 +82,26 @@ class ChatController extends Controller
         broadcast(new MessageSent($message))->toOthers();
 
         return response()->json($message);
+    }
+
+    public function chatConversation(int $userId)
+    {
+        $authId = Auth::id();
+        $user = User::findOrFail($userId);
+        $conversation = Conversation::where(function ($q) use ($authId, $user) {
+            $q->where('user_one_id', $authId)->where('user_two_id', $user->id);
+        })->orWhere(function ($q) use ($authId, $user) {
+            $q->where('user_one_id', $user->id)->where('user_two_id', $authId);
+        })->first();
+
+        if (!$conversation) {
+            $conversation = Conversation::create([
+                'user_one_id' => min($authId, $user->id),
+                'user_two_id' => max($authId, $user->id),
+            ]);
+        }
+
+        return redirect(route('chat'));
     }
 //    public function getChat($userId)
 //    {

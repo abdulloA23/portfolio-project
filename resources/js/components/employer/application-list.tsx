@@ -117,11 +117,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Eye, MessageCircle, XCircle } from 'lucide-react';
 import type { Application } from "@/types/employer";
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { CVViewer } from '@/components/jobseeker/cv-viewer';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { SharedData } from '@/types';
 
 const statusConfig: Record<
     string,
@@ -136,6 +137,7 @@ export function ApplicationCard({ application }: { application: Application }) {
     const jobseeker = application.jobseeker;
     const StatusIcon = statusConfig[application.status ?? "applied"].icon;
     const [showCVPreview, setShowCVPreview] = useState(false);
+    const userID = usePage<SharedData>().props.auth.user.id
 
     const handleSendRequest = (type:"accepted"|"rejected")=>{
         router.post(route('application-status'),{type:type,application_id:application.id},  {
@@ -153,8 +155,8 @@ export function ApplicationCard({ application }: { application: Application }) {
                         <Avatar>
                             <AvatarImage
                                 className="rounded-full object-cover"
-                                src={jobseeker.user.avatar ? `/storage/images/${jobseeker.user.avatar}` : undefined}
-                                alt={jobseeker.user.name}
+                                src={jobseeker.user ? (jobseeker.user.avatar ? `/storage/images/${jobseeker.user.avatar}` : undefined):""}
+                                alt={jobseeker.user ? jobseeker.user.name : ''}
                             />
                             <AvatarFallback>
                                 {jobseeker.first_name[0]}
@@ -229,9 +231,11 @@ export function ApplicationCard({ application }: { application: Application }) {
                                     <CVViewer data={application.jobseeker} showActions={false} />
                                 </DialogContent>
                             </Dialog>
-                            <Button size="sm" variant="outline">
-                                <MessageCircle className="mr-1 h-4 w-4" />
-                                Написать
+                            <Button asChild size="sm" variant="outline">
+                                <Link href={route('chat.conversation',application.jobseeker.user?.id)}>
+                                    <MessageCircle className="mr-1 h-4 w-4" />
+                                    Написать
+                                </Link>
                             </Button>
                         </div>
                     </div>

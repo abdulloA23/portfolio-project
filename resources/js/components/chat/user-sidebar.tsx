@@ -16,11 +16,10 @@ type UserSidebarProps = {
 export default function UserSidebar({ users, onSelectUser, selectedUser }: UserSidebarProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const getInitials = useInitials();
-
-    const filteredUsers = users.filter((user) =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
+    const usersArray: User[] = Array.isArray(users) ? users : Object.values(users) as User[];
+    const filteredUsers = usersArray.filter((user: User) => {
+        return user.name ? user.name.toLowerCase().includes(searchQuery.toLowerCase()) : false;
+    });
     return (
         <div className="flex flex-col w-64 border-border bg-background">
             {/* Header / Search */}

@@ -1,4 +1,3 @@
-// ChatPage.tsx
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import type { BreadcrumbItem, User } from '@/types';
@@ -12,11 +11,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function ChatPage({ users }: { users: User[] }) {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Чат" />
-            <div className="flex">
+            <div className="flex h-screen overflow-hidden"> {/* Full viewport height, no page scroll */}
                 {/* Sidebar */}
                 <UserSidebar
                     users={users}
@@ -25,11 +23,11 @@ export default function ChatPage({ users }: { users: User[] }) {
                 />
 
                 {/* Chat Area */}
-                    <div className="flex-1 flex flex-col min-h-0">
-                        <div className="w-full h-full shadow-xl rounded-xl overflow-hidden flex flex-col">
-                            <ChatInterface users={users} selectedUser={selectedUser} />
-                        </div>
+                <div className="flex-1 flex flex-col h-full overflow-hidden"> {/* Full height, no overflow */}
+                    <div className="w-full h-full shadow-xl rounded-xl flex flex-col">
+                        <ChatInterface selectedUser={selectedUser} />
                     </div>
+                </div>
             </div>
         </AppLayout>
     );

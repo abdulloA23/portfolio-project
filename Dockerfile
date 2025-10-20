@@ -1,48 +1,41 @@
-# 1. Use official PHP image with Apache
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
-# 2. Set working directory
-WORKDIR /var/www/html
-
-# 3. Install system dependencies and PHP extensions
+# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
     libonig-dev \
+    libxml2-dev \
     zip \
-    npm \
-    nodejs \
-    && docker-php-ext-configure gd \
-        --with-freetype \
-        --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd zip
+    unzip \
+    nginx
 
-# 4. Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Установка PHP расширений
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# 5. Install Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+# Установка Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 6. Copy project files
-COPY . .
+# Рабочая директория
+WORKDIR /var/www
 
-# 7. Install PHP dependencies
+# Копирование файлов проекта
+COPY . /var/www
+
+# Установка зависимостей Laravel
 RUN composer install --optimize-autoloader --no-dev
 
-# 8. Build frontend (если используешь Vite/Laravel Mix)
-RUN npm install && npm run build
+# Настройка прав
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# 9. Set correct permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+# Копирование конфигурации Nginx
+COPY nginx.conf /etc/nginx/sites-available/default
 
-# 10. Expose port 80
-EXPOSE 80
+# Скрипт запуска
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# 11. Start Apache
-CMD ["apache2-foreground"]
+EXPOSE 8080
+
+CMD ["/start.sh"]

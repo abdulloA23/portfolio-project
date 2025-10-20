@@ -1,18 +1,27 @@
 FROM php:8.2-fpm
 
-# Установка зависимостей
+# Установка зависимостей системы
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    nginx
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,20 +29,28 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Рабочая директория
 WORKDIR /var/www
 
-# Копирование файлов проекта
-COPY . /var/www
+# Копирование composer файлов сначала (для кэширования слоев)
+COPY composer.json composer.lock ./
 
-# Установка зависимостей Laravel
-RUN composer install --optimize-autoloader --no-dev
+# Установка зависимостей
+RUN composer install --no-scripts --no-autoloader --no-dev
+
+# Копирование остальных файлов проекта
+COPY . .
+
+# Завершение установки Composer
+RUN composer dump-autoload --optimize --no-dev
 
 # Настройка прав
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data \
+    /var/www/storage \
+    /var/www/bootstrap/cache
 
 # Копирование конфигурации Nginx
-COPY nginx.conf /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # Скрипт запуска
-COPY start.sh /start.sh
+COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
 EXPOSE 8080

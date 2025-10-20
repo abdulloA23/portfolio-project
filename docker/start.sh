@@ -4,10 +4,16 @@ set -e
 # Запуск PHP-FPM в фоне
 php-fpm -D
 
-# Выполнение миграций (если есть БД)
-if [ ! -z "$DB_HOST" ]; then
-    php artisan migrate --force
-fi
+# Ожидание доступности БД
+echo "Waiting for database..."
+sleep 5
+
+# Выполнение миграций
+php artisan migrate --force
+
+# Очистка старого кэша
+php artisan config:clear
+php artisan cache:clear
 
 # Кэширование конфигурации
 php artisan config:cache

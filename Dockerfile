@@ -44,6 +44,17 @@ COPY . .
 # Завершение установки Composer
 RUN composer dump-autoload --optimize --no-dev
 
+COPY package*.json ./
+
+# Установка npm зависимостей
+RUN npm ci
+
+# Копирование остальных файлов проекта
+COPY . .
+
+# Сборка фронтенда
+RUN npm run build
+
 # Создание директории для SQLite и файла БД
 RUN mkdir -p /var/www/database && \
     touch /var/www/database/database.sqlite

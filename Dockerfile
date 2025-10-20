@@ -1,38 +1,48 @@
-# Use official PHP 8.2 image with FPM
-FROM php:8.2-fpm
+# 1. Use official PHP image with Apache
+FROM php:8.2-apache
 
-# Install system dependencies and PHP extensions
+# 2. Set working directory
+WORKDIR /var/www/html
+
+# 3. Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libcurl4-openssl-dev \
-    zip \
-    unzip \
+    git \
     curl \
-    && docker-php-ext-install zip curl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    unzip \
+    libonig-dev \
+    zip \
+    npm \
+    nodejs \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql gd zip
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# 4. Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
-# Install Node.js and npm (Node 18 for compatibility with modern Laravel/Inertia)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# 5. Install Composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
-WORKDIR /var/www
-
-# Copy project files
+# 6. Copy project files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev && composer update --no-dev
+# 7. Install PHP dependencies
+RUN composer install --optimize-autoloader --no-dev
 
-# Install npm dependencies and build frontend assets
+# 8. Build frontend (если используешь Vite/Laravel Mix)
 RUN npm install && npm run build
 
-# Expose port for PHP-FPM
-EXPOSE 9000
+# 9. Set correct permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
-# Start PHP-FPM
-CMD ["php-fpm"]
+# 10. Expose port 80
+EXPOSE 80
+
+# 11. Start Apache
+CMD ["apache2-foreground"]

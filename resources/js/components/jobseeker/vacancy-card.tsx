@@ -121,7 +121,6 @@ import { route } from 'ziggy-js';
 // }
 
 
-import { Progress } from '@/components/ui/progress'; // Tailwind/Flowbite или свой компонент
 
 export default function VacancyCard({
                                         vacancy,

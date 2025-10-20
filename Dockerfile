@@ -1,5 +1,8 @@
 FROM php:8.2-fpm
 
+# Установка Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
 # Установка зависимостей системы
 RUN apt-get update && apt-get install -y \
     git \
@@ -12,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nginx \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
@@ -38,22 +42,20 @@ COPY composer.json composer.lock ./
 # Установка зависимостей
 RUN composer install --no-scripts --no-autoloader --no-dev
 
-# Копирование остальных файлов проекта
-COPY . .
-
-# Завершение установки Composer
-RUN composer dump-autoload --optimize --no-dev
-
+# Копирование package.json и package-lock.json
 COPY package*.json ./
 
 # Установка npm зависимостей
-RUN npm install
+RUN npm ci
 
 # Копирование остальных файлов проекта
 COPY . .
 
 # Сборка фронтенда
 RUN npm run build
+
+# Завершение установки Composer
+RUN composer dump-autoload --optimize --no-dev
 
 # Создание директории для SQLite и файла БД
 RUN mkdir -p /var/www/database && \

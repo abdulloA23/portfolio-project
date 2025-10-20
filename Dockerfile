@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     zip \
     unzip \
     nginx \
@@ -16,6 +17,8 @@ RUN apt-get update && apt-get install -y \
 # Установка PHP расширений
 RUN docker-php-ext-install \
     pdo_mysql \
+    pdo_pgsql \
+    pgsql \
     mbstring \
     exif \
     pcntl \
@@ -41,10 +44,15 @@ COPY . .
 # Завершение установки Composer
 RUN composer dump-autoload --optimize --no-dev
 
+# Создание директории для SQLite и файла БД
+RUN mkdir -p /var/www/database && \
+    touch /var/www/database/database.sqlite
+
 # Настройка прав
 RUN chown -R www-data:www-data \
     /var/www/storage \
-    /var/www/bootstrap/cache
+    /var/www/bootstrap/cache \
+    /var/www/database
 
 # Копирование конфигурации Nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default

@@ -47,7 +47,7 @@ RUN composer dump-autoload --optimize --no-dev
 COPY package*.json ./
 
 # Установка npm зависимостей
-RUN npm ci
+RUN npm install
 
 # Копирование остальных файлов проекта
 COPY . .

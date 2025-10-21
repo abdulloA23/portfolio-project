@@ -24,7 +24,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
                     <div className="relative z-20 mt-auto">
                         <blockquote className="space-y-2">
                             <p className="text-lg">Аутентификация важная часть процесса при работе</p>
-                            <footer className="text-sm text-neutral-300">Портфолио</footer>
+                            <footer className="text-sm text-neutral-300">Jobmatch</footer>
                         </blockquote>
                     </div>
                 {/*)}*/}

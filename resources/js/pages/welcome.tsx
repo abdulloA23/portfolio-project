@@ -127,7 +127,7 @@ export default function Welcome({users,employers}:{users:number,employers:number
                             {/* Logo */}
                             <Link href="/" className="flex items-center space-x-2">
                                 <Briefcase className="h-8 w-8 text-primary" />
-                                <span className="text-2xl font-bold">Портфолио</span>
+                                <span className="text-2xl font-bold">Jobmatch</span>
                             </Link>
 
 

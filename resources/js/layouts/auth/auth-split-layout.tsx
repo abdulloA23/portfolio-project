@@ -18,7 +18,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
                 <div className="absolute inset-0 bg-[url('/ser.jpg')] blur-md bg-cover bg-center bg-no-repeat" />
                 <Link href={route('home')} className="relative z-20 flex items-center text-lg font-medium">
                     <Briefcase className={"w-12 h-12 mr-2"}/>
-                    {name}
+                    Jobmatch
                 </Link>
                 {/*{quote && (*/}
                     <div className="relative z-20 mt-auto">

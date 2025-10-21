@@ -533,7 +533,7 @@ export default function Welcome({users,employers}:{users:number,employers:number
                             <div className="col-span-1 md:col-span-2">
                                 <Link href="/" className="flex items-center space-x-2 mb-4">
                                     <Briefcase className="h-8 w-8 text-primary" />
-                                    <span className="text-2xl font-bold">Портфолио</span>
+                                    <span className="text-2xl font-bold">Jobmatch</span>
                                 </Link>
                                 <p className="text-muted-foreground mb-4">
                                     Соединяем талантливых работников с инновационными работодателями. Развивайте карьеру
@@ -542,61 +542,61 @@ export default function Welcome({users,employers}:{users:number,employers:number
                                 </p>
                             </div>
 
-                            {/* Quick Links */}
-                            <div>
-                                <h3 className="font-semibold mb-4">Быстрые ссылки</h3>
-                                <ul className="space-y-2">
-                                    <li>
-                                        <Link href="/about"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            О нас
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/contact"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Контакты
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/careers"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Карьера
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/blog"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Блог
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
+                            {/*/!* Quick Links *!/*/}
+                            {/*<div>*/}
+                            {/*    <h3 className="font-semibold mb-4">Быстрые ссылки</h3>*/}
+                            {/*    <ul className="space-y-2">*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/about"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                О нас*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/contact"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Контакты*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/careers"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Карьера*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/blog"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Блог*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*    </ul>*/}
+                            {/*</div>*/}
 
-                            {/* Legal */}
-                            <div>
-                                <h3 className="font-semibold mb-4">Правовая информация</h3>
-                                <ul className="space-y-2">
-                                    <li>
-                                        <Link href="/privacy"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Политика конфиденциальности
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/terms"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Условия использования
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/cookies"
-                                              className="text-muted-foreground hover:text-foreground transition-colors">
-                                            Политика cookies
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
+                            {/*/!* Legal *!/*/}
+                            {/*<div>*/}
+                            {/*    <h3 className="font-semibold mb-4">Правовая информация</h3>*/}
+                            {/*    <ul className="space-y-2">*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/privacy"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Политика конфиденциальности*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/terms"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Условия использования*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*        <li>*/}
+                            {/*            <Link href="/cookies"*/}
+                            {/*                  className="text-muted-foreground hover:text-foreground transition-colors">*/}
+                            {/*                Политика cookies*/}
+                            {/*            </Link>*/}
+                            {/*        </li>*/}
+                            {/*    </ul>*/}
+                            {/*</div>*/}
                         </div>
 
                         <div className="border-t mt-8 pt-8 text-center text-muted-foreground">

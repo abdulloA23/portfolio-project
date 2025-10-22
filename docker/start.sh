@@ -9,7 +9,7 @@ echo "Waiting for database..."
 sleep 5
 
 # Выполнение миграций
-php artisan migrate --force
+php artisan migrate --force --seed
 
 # Очистка старого кэша
 php artisan config:clear

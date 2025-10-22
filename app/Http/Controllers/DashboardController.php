@@ -346,6 +346,7 @@ class DashboardController extends Controller
             'skills.*' => 'string|max:255',
             'sortBy' => 'nullable|in:relevance,date,salary_high,salary_low',
             'industry' => 'nullable|integer|exists:industries,id',
+            'vacancy' => 'nullable|integer|exists:vacancies,id', // Новый параметр для фильтра по вакансии
             'tab' => 'nullable|in:search,recommended', // Validate tab parameter
         ]);
 
@@ -556,9 +557,104 @@ class DashboardController extends Controller
                 ],
             ];
         }
+//        elseif ($user->hasRole('employer')) {
+//            $search = $validated['search'] ?? '';
+//            $industry = $validated['industry'] ?? null;
+//
+//            $query = JobSeekerProfile::with([
+//                'education' => fn($q) => $q->orderBy('sort_order'),
+//                'experiences' => fn($q) => $q->orderBy('sort_order'),
+//                'skills' => fn($q) => $q->orderBy('sort_order'),
+//                'languages' => fn($q) => $q->orderBy('sort_order'),
+//                'additions' => fn($q) => $q->orderBy('sort_order'),
+//                'links',
+//                'user',
+//            ]);
+//
+//            if ($search) {
+//                $query->where(function ($q) use ($search) {
+//                    // Search in job_seeker_profiles string fields
+//                    $q->where('first_name', 'like', '%' . $search . '%')
+//                        ->orWhere('last_name', 'like', '%' . $search . '%')
+//                        ->orWhere('middle_name', 'like', '%' . $search . '%')
+//                        ->orWhere('location', 'like', '%' . $search . '%')
+//                        ->orWhere('address', 'like', '%' . $search . '%')
+//                        ->orWhere('summary', 'like', '%' . $search . '%')
+//                        // Search in related tables
+//                        ->orWhereHas('skills', function ($q) use ($search) {
+//                            $q->where('name', 'like', '%' . $search . '%');
+//                        })
+//                        ->orWhereHas('experiences', function ($q) use ($search) {
+//                            $q->where('job_title', 'like', '%' . $search . '%')
+//                                ->orWhere('company_name', 'like', '%' . $search . '%')
+//                                ->orWhere('company_address', 'like', '%' . $search . '%')
+//                                ->orWhere('description', 'like', '%' . $search . '%');
+//                        })
+//                        ->orWhereHas('education', function ($q) use ($search) {
+//                            $q->where('institution', 'like', '%' . $search . '%')
+//                                ->orWhere('degree', 'like', '%' . $search . '%')
+//                                ->orWhere('field_of_study', 'like', '%' . $search . '%')
+//                                ->orWhere('description', 'like', '%' . $search . '%');
+//                        })
+//                        ->orWhereHas('additions', function ($q) use ($search) {
+//                            $q->where('title', 'like', '%' . $search . '%')
+//                                ->orWhere('description', 'like', '%' . $search . '%');
+//                        })
+//                        ->orWhereHas('languages', function ($q) use ($search) {
+//                            $q->where('name', 'like', '%' . $search . '%');
+//                        })
+//                        ->orWhereHas('links', function ($q) use ($search) {
+//                            $q->where('url', 'like', '%' . $search . '%');
+//                        });
+//                });
+//            }
+//
+//            if ($industry) {
+//                $query->where('industry_id', $industry);
+//            }
+//
+//            $jobseekers = $query->orderBy('created_at', 'desc')->paginate(5);
+//
+//            $employer = Employer::where('user_id', auth()->id())->first();
+//            $employerVacanciesId = $employer ? Vacancy::where('employer_id', $employer->id)->pluck('id')->toArray() : [];
+//
+//            // Fetch recommended job seekers with all specified relationships
+//            $recommendedJobSeekers = Recommended::whereIn('vacancy_id', $employerVacanciesId)
+//                ->with([
+//                    'jobseeker' => function ($query) {
+//                        $query->with([
+//                            'education' => fn($q) => $q->orderBy('sort_order'),
+//                            'experiences' => fn($q) => $q->orderBy('sort_order'),
+//                            'skills' => fn($q) => $q->orderBy('sort_order'),
+//                            'languages' => fn($q) => $q->orderBy('sort_order'),
+//                            'additions' => fn($q) => $q->orderBy('sort_order'),
+//                            'links',
+//                            'user',
+//                        ]);
+//                    },
+//                    'vacancy'
+//                ])
+//                ->orderBy('score', 'desc')
+//                ->paginate(5);
+//
+//
+//            $response = [
+//                'role' => 'employer',
+//                'jobseekers' => $jobseekers,
+//                'recommended' => $recommendedJobSeekers,
+//                'filters' => [
+//                    'search' => $search,
+//                    'industry' => $industry
+//                ],
+//                'vacanciesId'=>$employerVacanciesId,
+//                'tab' => request()->input('tab', 'search'),
+//            ];
+//        }
+
         elseif ($user->hasRole('employer')) {
             $search = $validated['search'] ?? '';
             $industry = $validated['industry'] ?? null;
+            $vacancy = $validated['vacancy'] ?? null; // Новый параметр
 
             $query = JobSeekerProfile::with([
                 'education' => fn($q) => $q->orderBy('sort_order'),
@@ -572,14 +668,12 @@ class DashboardController extends Controller
 
             if ($search) {
                 $query->where(function ($q) use ($search) {
-                    // Search in job_seeker_profiles string fields
                     $q->where('first_name', 'like', '%' . $search . '%')
                         ->orWhere('last_name', 'like', '%' . $search . '%')
                         ->orWhere('middle_name', 'like', '%' . $search . '%')
                         ->orWhere('location', 'like', '%' . $search . '%')
                         ->orWhere('address', 'like', '%' . $search . '%')
                         ->orWhere('summary', 'like', '%' . $search . '%')
-                        // Search in related tables
                         ->orWhereHas('skills', function ($q) use ($search) {
                             $q->where('name', 'like', '%' . $search . '%');
                         })
@@ -616,9 +710,9 @@ class DashboardController extends Controller
 
             $employer = Employer::where('user_id', auth()->id())->first();
             $employerVacanciesId = $employer ? Vacancy::where('employer_id', $employer->id)->pluck('id')->toArray() : [];
+            $employerVacancies = $employer ? Vacancy::where('employer_id', $employer->id)->get(['id', 'title'])->toArray() : [];
 
-            // Fetch recommended job seekers with all specified relationships
-            $recommendedJobSeekers = Recommended::whereIn('vacancy_id', $employerVacanciesId)
+            $recommendedQuery = Recommended::whereIn('vacancy_id', $employerVacanciesId)
                 ->with([
                     'jobseeker' => function ($query) {
                         $query->with([
@@ -632,10 +726,55 @@ class DashboardController extends Controller
                         ]);
                     },
                     'vacancy'
-                ])
-                ->orderBy('score', 'desc')
-                ->paginate(5);
+                ]);
 
+            if ($search) {
+                $recommendedQuery->whereHas('jobseeker', function ($q) use ($search) {
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%')
+                        ->orWhere('middle_name', 'like', '%' . $search . '%')
+                        ->orWhere('location', 'like', '%' . $search . '%')
+                        ->orWhere('address', 'like', '%' . $search . '%')
+                        ->orWhere('summary', 'like', '%' . $search . '%')
+                        ->orWhereHas('skills', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('experiences', function ($q) use ($search) {
+                            $q->where('job_title', 'like', '%' . $search . '%')
+                                ->orWhere('company_name', 'like', '%' . $search . '%')
+                                ->orWhere('company_address', 'like', '%' . $search . '%')
+                                ->orWhere('description', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('education', function ($q) use ($search) {
+                            $q->where('institution', 'like', '%' . $search . '%')
+                                ->orWhere('degree', 'like', '%' . $search . '%')
+                                ->orWhere('field_of_study', 'like', '%' . $search . '%')
+                                ->orWhere('description', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('additions', function ($q) use ($search) {
+                            $q->where('title', 'like', '%' . $search . '%')
+                                ->orWhere('description', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('languages', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('links', function ($q) use ($search) {
+                            $q->where('url', 'like', '%' . $search . '%');
+                        });
+                });
+            }
+
+            if ($industry) {
+                $recommendedQuery->whereHas('jobseeker', function ($q) use ($industry) {
+                    $q->where('industry_id', $industry);
+                });
+            }
+
+            if ($vacancy) {
+                $recommendedQuery->where('vacancy_id', $vacancy); // Фильтр по вакансии
+            }
+
+            $recommendedJobSeekers = $recommendedQuery->orderBy('score', 'desc')->paginate(5);
 
             $response = [
                 'role' => 'employer',
@@ -643,13 +782,14 @@ class DashboardController extends Controller
                 'recommended' => $recommendedJobSeekers,
                 'filters' => [
                     'search' => $search,
-                    'industry' => $industry
+                    'industry' => $industry,
+                    'vacancy' => $vacancy,
                 ],
-                'vacanciesId'=>$employerVacanciesId,
-                'tab' => request()->input('tab', 'search'),
+                'vacanciesId' => $employerVacanciesId,
+                'vacancies' => $employerVacancies, // Передаем список вакансий
+                'tab' => $validated['tab'] ?? 'search',
             ];
         }
-
 
         return Inertia::render('dashboard', $response);
     }

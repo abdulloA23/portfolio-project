@@ -1,3 +1,5 @@
+//
+//
 // import React from 'react';
 // import { Button } from '@/components/ui/button';
 // import { JobSeekerPagination } from '@/types/jobseeker';
@@ -8,7 +10,7 @@
 // type Pagination = JobSeekerPagination | RecommendedPagination | VacancyPagination;
 //
 // interface PaginateProps {
-//     data: Pagination;
+//     data: Pagination & { tab?: string }; // Добавляем tab в тип
 // }
 //
 // const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
@@ -36,6 +38,11 @@
 //         }
 //         if (filters?.industry) {
 //             params.set('industry', filters.industry);
+//         }
+//
+//         // Добавляем параметр tab, если он присутствует
+//         if (data.tab) {
+//             params.set('tab', data.tab);
 //         }
 //
 //         return `${data.path}?${params.toString()}`;
@@ -123,12 +130,11 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-r
 type Pagination = JobSeekerPagination | RecommendedPagination | VacancyPagination;
 
 interface PaginateProps {
-    data: Pagination & { tab?: string }; // Добавляем tab в тип
+    data: Pagination & { tab?: string };
 }
 
 const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
-    // Получаем текущие фильтры из usePage
-    const { filters } = usePage<{ filters: { search?: string; industry?: string | null } }>().props;
+    const { filters } = usePage<{ filters: { search?: string; industry?: string | null; vacancy?: string | null } }>().props;
 
     if (!data || !data.links || !data.data || data.data.length === 0) {
         return null;
@@ -140,20 +146,19 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
     const goForward10 = Math.min(currentPage + 10, totalPages);
     const goBack10 = Math.max(currentPage - 10, 1);
 
-    // Функция для формирования URL с сохранением текущих параметров
     const buildUrl = (page: number | string) => {
         const params = new URLSearchParams();
         params.set('page', page.toString());
 
-        // Сохраняем текущие фильтры
         if (filters?.search) {
             params.set('search', filters.search);
         }
         if (filters?.industry) {
             params.set('industry', filters.industry);
         }
-
-        // Добавляем параметр tab, если он присутствует
+        if (filters?.vacancy) {
+            params.set('vacancy', filters.vacancy); // Добавляем vacancy
+        }
         if (data.tab) {
             params.set('tab', data.tab);
         }
@@ -163,7 +168,6 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
 
     return (
         <div className="flex flex-wrap items-center gap-2">
-            {/* Кнопка -10 */}
             {currentPage > 10 && (
                 <Link
                     href={buildUrl(goBack10)}
@@ -178,7 +182,6 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
             {data.links.map((link: PaginationLink, index: number) => {
                 let content: React.ReactNode = link.label;
 
-                // Заменяем Previous и Next на стрелки
                 if (link.label === '&laquo;' || link.label.toLowerCase().includes('previous')) {
                     content = <ChevronLeft className="w-4 h-4" />;
                 } else if (link.label === '&raquo;' || link.label.toLowerCase().includes('next')) {
@@ -216,7 +219,6 @@ const JobseekerPaginate: React.FC<PaginateProps> = ({ data }) => {
                 );
             })}
 
-            {/* Кнопка +10 */}
             {currentPage + 10 <= totalPages && (
                 <Link
                     href={buildUrl(goForward10)}

@@ -189,7 +189,7 @@ export default function IndexVacancyPage({vacancies,totalViews,totalApplications
                                                 </span>
                                                 <div className="flex gap-2">
                                                     <Button asChild variant={'outline'} size={'sm'}>
-                                                        <Link href={`/dashboard?industry=${vacancy.industry_id}&tab=recommended`}>
+                                                        <Link href={`/dashboard?vacancy=${vacancy.id}&tab=recommended`}>
                                                             <User2 />
                                                             Рекомендации
                                                         </Link>

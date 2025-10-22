@@ -1388,7 +1388,7 @@ export default function EmployerDashboard({ jobseekers, recommended }: { jobseek
                                 <JobseekerCard key={index} jobseeker={jobseeker} />
                             ))}
                             <div className="flex justify-end">
-                                <JobseekerPaginate data={jobseekers} />
+                                <JobseekerPaginate data={{ ...jobseekers, tab: 'search' }} />
                             </div>
                         </>
                     )}
@@ -1522,7 +1522,7 @@ export default function EmployerDashboard({ jobseekers, recommended }: { jobseek
                                 />
                             ))}
                             <div className="flex justify-end">
-                                <JobseekerPaginate data={recommended} />
+                                <JobseekerPaginate data={{ ...recommended, tab: 'recommended' }} />
                             </div>
                         </>
                     )}

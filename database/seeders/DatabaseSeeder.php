@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             IndustrySeeder::class,
             VacancySeeder::class,
             JobSeekerSeeder::class,
+            VacancyViewsSeeder::class,
         ]);
     }
 }
